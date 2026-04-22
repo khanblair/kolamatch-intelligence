@@ -22,7 +22,7 @@ export default function ClientJobsPage() {
                     <h1 className="text-2xl font-bold text-gray-900">My Posted Projects</h1>
                     <p className="text-gray-500">Manage your projects and review proposals.</p>
                 </div>
-                <Link href="/dashboard">
+                <Link href="/client/dashboard">
                     <Button className="gap-2">
                         <Plus className="h-4 w-4" />
                         New Project

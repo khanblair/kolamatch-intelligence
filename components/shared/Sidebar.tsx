@@ -6,15 +6,15 @@ import { cn } from "@/lib/utils/cn";
 import { LayoutDashboard, Briefcase, Settings, LogOut } from "lucide-react";
 
 const clientNav = [
-    { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "My Jobs", href: "/jobs", icon: Briefcase },
-    { name: "Settings", href: "/settings", icon: Settings },
+    { name: "Dashboard", href: "/client/dashboard", icon: LayoutDashboard },
+    { name: "My Jobs", href: "/client/jobs", icon: Briefcase },
+    { name: "Settings", href: "/client/settings", icon: Settings },
 ];
 
 const freelancerNav = [
-    { name: "Project Feed", href: "/dashboard", icon: LayoutDashboard },
-    { name: "My Applications", href: "/jobs", icon: Briefcase },
-    { name: "Settings & CV", href: "/settings", icon: Settings },
+    { name: "Project Feed", href: "/freelancer/dashboard", icon: LayoutDashboard },
+    { name: "My Applications", href: "/freelancer/jobs", icon: Briefcase },
+    { name: "Settings & CV", href: "/freelancer/settings", icon: Settings },
 ];
 
 export function Sidebar({ type }: { type: "client" | "freelancer" }) {

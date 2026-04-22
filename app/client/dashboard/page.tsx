@@ -44,31 +44,31 @@ export default function ClientDashboard() {
                 <p className="text-gray-500">Transform your rough idea into a professional job post.</p>
             </div>
 
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                    What are you looking to build?
+            <div className="bg-white p-8 rounded-2xl shadow-xl shadow-gray-200/40 border border-gray-100">
+                <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-3 ml-1">
+                    Project Brief / Idea
                 </label>
                 <textarea
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="e.g., I need an app like Uber but for local logistics with mobile money integration..."
-                    className="w-full h-40 p-4 border border-gray-200 rounded-lg focus:ring-2 focus:ring-[#35b544] focus:border-transparent transition-all outline-none resize-none"
+                    className="w-full h-48 p-5 border border-gray-100 rounded-xl bg-gray-50/50 text-gray-900 shadow-inner ring-1 ring-inset ring-gray-100 focus:ring-2 focus:ring-inset focus:ring-[#35b544] focus:bg-white focus:shadow-[0_0_25px_-5px_rgba(53,181,68,0.2)] transition-all outline-none resize-none sm:text-base leading-relaxed"
                 />
-                <div className="mt-4 flex justify-end">
+                <div className="mt-6 flex justify-end">
                     <Button
                         onClick={handleScope}
                         disabled={loading || !input.trim()}
-                        className={cn(loading && "animate-pulse")}
+                        className={cn("h-12 px-8 font-bold text-base shadow-lg shadow-green-100 transition-all active:scale-[0.98]", loading && "animate-pulse")}
                     >
                         {loading ? (
                             <>
-                                <Loader2 className="animate-spin h-5 w-5 mr-2" />
-                                Scoping...
+                                <Loader2 className="animate-spin h-5 w-5 mr-3" />
+                                AI Scoping...
                             </>
                         ) : (
                             <>
-                                <Sparkles className="h-5 w-5 mr-2" />
-                                Scope Project
+                                <Sparkles className="h-5 w-5 mr-3" />
+                                Analyze & Scope
                             </>
                         )}
                     </Button>
@@ -76,14 +76,14 @@ export default function ClientDashboard() {
             </div>
 
             {error && (
-                <div className="bg-red-50 border border-red-100 text-red-700 p-4 rounded-lg flex items-start gap-3">
+                <div className="bg-red-50 border border-red-100 text-red-700 p-5 rounded-xl flex items-start gap-3 animate-in fade-in zoom-in-95">
                     <AlertCircle className="h-5 w-5 mt-0.5 flex-shrink-0" />
-                    <p>{error}</p>
+                    <p className="font-medium text-sm">{error}</p>
                 </div>
             )}
 
             {result && (
-                <div className="pb-12 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                <div className="pb-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
                     <ScopeAnalysis result={result} />
                 </div>
             )}
