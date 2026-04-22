@@ -52,3 +52,26 @@ export function Card({ children, className }: { children: React.ReactNode; class
         </div>
     );
 }
+
+export function Input(props: React.InputHTMLAttributes<HTMLInputElement>) {
+    return (
+        <input
+            {...props}
+            className={cn(
+                "flex h-10 w-full rounded-md border border-gray-200 bg-white px-3 py-2 text-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-gray-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500 disabled:cursor-not-allowed disabled:opacity-50",
+                props.className
+            )}
+        />
+    );
+}
+
+export function Progress({ value, className }: { value: number; className?: string }) {
+    return (
+        <div className={cn("relative h-2 w-full overflow-hidden rounded-full bg-gray-100", className)}>
+            <div
+                className="h-full w-full flex-1 bg-[#35b544] transition-all"
+                style={{ transform: `translateX(-${100 - (value || 0)}%)` }}
+            />
+        </div>
+    );
+}

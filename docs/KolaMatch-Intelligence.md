@@ -13,7 +13,7 @@ The system takes a single raw input — a client's unstructured project idea —
 - A **polished, structured job post** the client can immediately use
 - A **tailored proposal starter** a matched freelancer can personalize and submit
 
-Everything runs locally on a personal machine (Next.js + Node.js). WhatsApp delivers real-time alerts to both parties. CVs uploaded by freelancers power the AI matching engine. A one-click PDF export turns every output into a shareable business document.
+Everything runs locally on a personal machine (Next.js + Node.js). **Multi-channel messaging (WhatsApp + Telegram)** delivers real-time alerts to both parties. CVs uploaded by freelancers power the AI matching engine. A one-click PDF export turns every output into a shareable business document.
 
 ---
 
@@ -48,7 +48,7 @@ Every failed or disputed project costs Kolaborate reputation. KolaMatch attacks 
    - A **Polished Job Post Draft** with: executive summary, technical deliverables, project phases, realistic timeline, and grounded budget range
    - Any **red flags** detected (e.g. "Timeline is aggressive for described scope", "Budget is below market rate for mobile app development")
 4. Client reviews, edits if needed, and clicks **"Finalize Job Post"**
-5. WhatsApp notification fires instantly to all matched freelancers
+5. **Multi-channel notification** (WhatsApp/Telegram) fires instantly to all matched freelancers
 
 ---
 
@@ -57,12 +57,14 @@ Every failed or disputed project costs Kolaborate reputation. KolaMatch attacks 
 Freelancers register once by uploading their CV (PDF). The system parses the CV and stores a structured profile:
 - Skills extracted
 - Years of experience inferred
-- Past project types identified
-- Seniority level estimated (junior / mid / senior)
+- Past project- **Enhanced Field Extraction & Detailed Prompts**:
+    - The AI now extracts `name`, `email`, `summary`, `notableProjects`, and `suggestedRate` in addition to skills and experience.
+    - Added a detailed JSON schema to guide the AI in capturing all available professional data.
+    - Instructions ensure that missing fields in the profile are filled from the CV, and existing ones are intelligently merged or updated.
+    - The code now handles the full profile update using the AI-provided JSON structure, ensuring a robust "Full Platform Sync".
+ the CV and reasoning about compatibility.
 
-When a new job post is finalized, the AI ranks all freelancer CVs against the job requirements and selects the **top 3 best-fit matches**, with a one-sentence explanation of why each is a strong fit. This is not keyword filtering — it is OpenRouter reading both the job and the CV and reasoning about compatibility.
-
-Matched freelancers receive a **WhatsApp notification**:
+Matched freelancers receive an **Instant Alert**:
 > *"🚨 New project match: [Project Title] — estimated $X–$Y. Your [Skill] experience is a strong fit. Tap to view scope and generate your proposal."*
 
 ---
@@ -83,7 +85,7 @@ Matched freelancers receive a **WhatsApp notification**:
 
 ### Phase 4 — The Client Closes (WhatsApp → Web)
 
-Client receives a WhatsApp notification:
+Client receives an **Instant Alert**:
 > *"🔔 New proposal received from a matched Kolaborator for [Project Title]. Tap to review."*
 
 Client opens the dashboard, reads a highly relevant, well-structured proposal, and hires.
@@ -115,20 +117,22 @@ The AI breaks the project into components, assigns hours per component, multipli
 
 ---
 
-## 5. WhatsApp Integration
+---
 
-**Technology:** `wppconnect` (local Node.js server) — no cloud dependency, runs on the same machine as the app.
+## 6. Multi-Channel Messaging (WhatsApp & Telegram)
 
-**Setup:** One-time QR code scan to link a WhatsApp number. The wppconnect session persists on the local machine.
+**WhatsApp (wppconnect):**
+- **Technology:** Local Node.js server — no cloud dependency.
+- **Setup:** One-time QR code scan to link a WhatsApp number.
 
-**Two notification types:**
+**Telegram (Telegraf):**
+- **Technology:** Dedicated Telegram Bot API.
+- **Setup:** Zero local setup — simply provide a `TELEGRAM_BOT_TOKEN`. Perfect for rapid deployment and instant alerts.
 
-| Trigger | Recipient | Message |
-|---|---|---|
-| Job post finalized | Top 3 matched freelancers | New project alert with title, budget range, and dashboard link |
-| Proposal submitted | Client | New proposal alert with freelancer name and dashboard link |
-
-**Demo mode:** A seeded list of 5 demo freelancer profiles with phone numbers (can use the developer's own number for all 5 in testing) ensures WhatsApp notifications fire reliably during the demo without real user accounts.
+**Unified Notification Router:**
+System events map to templated messages delivered to the user's preferred channel:
+- **Job matching alerts** (to freelancers)
+- **Proposal received alerts** (to clients)
 
 ---
 
@@ -175,11 +179,12 @@ Every output in KolaMatch can be exported as a formatted PDF:
 
 | Layer | Technology | Why |
 |---|---|---|
-| Frontend | Next.js 14 + Tailwind CSS | Component reuse, fast iteration, built-in routing |
-| AI Engine | OpenRouter API (anthropic/claude-3.5-sonnet) | Scoping, matching, proposal generation |
+| Frontend | Next.js 16 + Tailwind CSS | Component reuse, fast iteration, built-in routing |
+| AI Engine | OpenRouter API (google/gemini-2.0-flash-exp) | Scoping, matching, proposal generation |
 | Backend | Next.js API routes | No separate server needed |
 | CV Parsing | OpenRouter API (PDF input) | Native PDF reading, no external parser |
 | WhatsApp | wppconnect (local Node.js) | No Meta cloud API needed, works offline |
+| Telegram | Telegraf (Bot API) | Zero-setup, instant multi-channel alerts |
 | Data Store | Local JSON files | Zero setup, sufficient for demo + hackathon |
 | PDF Export | jsPDF + html2canvas | Client-side, no backend dependency |
 | Hosting | Local (localhost:3000) | Demo runs on personal machine |

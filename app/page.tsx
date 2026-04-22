@@ -85,7 +85,7 @@ export default function LandingPage() {
       <section className="py-20 border-y border-gray-100">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-12 text-center">
           <StatBox label="Clarity Score" value="0-100" />
-          <StatBox label="Matching Engine" value="Claude 3.5" />
+          <StatBox label="Matching Engine" value="Gemini 2.0" />
           <StatBox label="Delivery" value="WhatsApp" />
           <StatBox label="Rate Cards" value="African Market" />
         </div>

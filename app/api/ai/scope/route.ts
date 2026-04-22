@@ -18,7 +18,7 @@ export async function POST(req: Request) {
             { role: "user", content: rawInput },
         ];
 
-        const result = await generateCompletion(messages as any, MODELS.CLAUDE_3_5_SONNET);
+        const result = await generateCompletion(messages as any);
 
         // Parse the JSON result from the AI
         let parsedResult;

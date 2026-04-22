@@ -1,0 +1,18 @@
+[
+    {
+        "id": "c1",
+        "name": "Kola Logistics Ltd",
+        "industry": "Transport & Logistics",
+        "description": "Providing smart logistics solutions for East African startups.",
+        "contactPerson": "Jane Doe",
+        "email": "jane@kolalogistics.com"
+    },
+    {
+        "id": "c2",
+        "name": "Kezia FinTech",
+        "industry": "Financial Services",
+        "description": "Leading digital payments provider in Uganda.",
+        "contactPerson": "Robert S.",
+        "email": "robert@keziafintech.ug"
+    }
+]

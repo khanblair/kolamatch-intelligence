@@ -4,7 +4,7 @@ import { generateCompletion, MODELS } from "@/lib/ai/openrouter";
 // Utility to extract text from a PDF (Mocked for demo, as actual PDF parsing inside Next.js needs heavy deps like pdf-parse)
 // In a real scenario, we'd use a server action or a dedicated microservice.
 // For the demo, we'll assume the client sends the extracted text or we use OpenRouter with a Vision model if it supports PDFs directly.
-// OpenRouter's Claude 3.5 Sonnet supports PDF input directly in some contexts, but here we'll simulate the text parsing.
+// OpenRouter's Google Gemini Flash supports PDF input directly in some contexts, but here we'll simulate the text parsing.
 
 export async function POST(req: Request) {
     try {
@@ -26,7 +26,7 @@ export async function POST(req: Request) {
             { role: "user", content: text }
         ];
 
-        const result = await generateCompletion(messages as any, MODELS.CLAUDE_3_5_SONNET);
+        const result = await generateCompletion(messages as any);
         const parsed = JSON.parse(result || "{}");
 
         return NextResponse.json(parsed);

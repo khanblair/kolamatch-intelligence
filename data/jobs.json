@@ -1,1 +1,26 @@
-[]
+[
+    {
+        "id": "job_1",
+        "title": "Mobile Logistics App (Uber for Trucks)",
+        "summary": "Building a cross-platform application for fleet management and logistics tracking in East Africa.",
+        "description": "A cross-platform app for tracking logistics and fleet management in East Africa. Needs Mobile Money integration.",
+        "budget": "$1,500 - $3,000",
+        "suggestedRateRange": "$35-50/hr",
+        "estimatedHours": 80,
+        "clientId": "c1",
+        "status": "active",
+        "postedAt": "2026-04-22T10:00:00Z"
+    },
+    {
+        "id": "job_2",
+        "title": "E-commerce UI/UX Refactor",
+        "summary": "A design-focused project to overhaul the checkout flow for a major Ugandan fintech application.",
+        "description": "Looking for a designer to overhaul the checkout flow of a major Ugandan fintech app.",
+        "budget": "$800 - $1,200",
+        "suggestedRateRange": "$25-45/hr",
+        "estimatedHours": 35,
+        "clientId": "c2",
+        "status": "active",
+        "postedAt": "2026-04-21T15:00:00Z"
+    }
+]

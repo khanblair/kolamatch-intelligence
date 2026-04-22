@@ -22,15 +22,15 @@ export function JobMatchCard({ job }: { job: JobPost }) {
             <div className="mt-6 flex flex-wrap gap-4 text-sm text-gray-500">
                 <div className="flex items-center gap-1.5">
                     <DollarSign className="h-4 w-4" />
-                    {job.suggestedRateRange}
+                    {job.suggestedRateRange || "TBD"}
                 </div>
                 <div className="flex items-center gap-1.5">
                     <Clock className="h-4 w-4" />
-                    {job.estimatedHours} hours
+                    {job.estimatedHours || 0} hours
                 </div>
                 <div className="flex items-center gap-1.5">
                     <Briefcase className="h-4 w-4" />
-                    {job.phases.length} Phases
+                    {(job.phases || []).length} Phases
                 </div>
             </div>
 

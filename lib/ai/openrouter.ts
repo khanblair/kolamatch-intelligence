@@ -12,8 +12,9 @@ export const openrouter = new OpenAI({
 });
 
 export const MODELS = {
-  CLAUDE_3_5_SONNET: "anthropic/claude-3.5-sonnet",
-  CLAUDE_3_OPUS: "anthropic/claude-3-opus",
+  GEMINI_3_FLASH: "google/gemini-3-flash-preview",
+  GEMINI_2_FLASH: "google/gemini-2.0-flash-exp:free",
+  GEMINI_1_5_FLASH: "google/gemini-flash-1.5",
   GPT_4O: "openai/gpt-4o",
 };
 
@@ -24,7 +25,7 @@ export type Message = {
 
 export async function generateCompletion(
   messages: Message[],
-  model: string = MODELS.CLAUDE_3_5_SONNET
+  model: string = MODELS.GEMINI_3_FLASH
 ) {
   try {
     const response = await openrouter.chat.completions.create({

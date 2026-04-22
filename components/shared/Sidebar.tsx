@@ -3,17 +3,19 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
-import { LayoutDashboard, Briefcase, Settings, LogOut } from "lucide-react";
+import { LayoutDashboard, Briefcase, Settings, LogOut, User } from "lucide-react";
 
 const clientNav = [
     { name: "Dashboard", href: "/client/dashboard", icon: LayoutDashboard },
     { name: "My Jobs", href: "/client/jobs", icon: Briefcase },
+    { name: "Profile", href: "/client/profile", icon: User },
     { name: "Settings", href: "/client/settings", icon: Settings },
 ];
 
 const freelancerNav = [
     { name: "Project Feed", href: "/freelancer/dashboard", icon: LayoutDashboard },
     { name: "My Applications", href: "/freelancer/jobs", icon: Briefcase },
+    { name: "Profile", href: "/freelancer/profile", icon: User },
     { name: "Settings & CV", href: "/freelancer/settings", icon: Settings },
 ];
 

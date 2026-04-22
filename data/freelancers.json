@@ -3,20 +3,49 @@
     "id": "f1",
     "name": "Kezia Namugga",
     "email": "kezia@example.com",
-    "skills": ["React Native", "TypeScript", "Mobile Money API"],
+    "skills": [
+      "React Native",
+      "TypeScript",
+      "Mobile Money API"
+    ],
     "experienceYears": 4,
     "seniority": "mid",
-    "notableProjects": ["SafeRide App", "KolaPay Widget"],
+    "notableProjects": [
+      "SafeRide App",
+      "KolaPay Widget"
+    ],
     "suggestedRate": "$35-50/hr"
   },
   {
     "id": "f2",
     "name": "Ivan Ssempijja",
-    "email": "ivan@example.com",
-    "skills": ["Next.js", "Node.js", "PostgreSQL"],
-    "experienceYears": 6,
-    "seniority": "senior",
-    "notableProjects": ["E-Commerce Backend", "HealthTrack Dashboard"],
-    "suggestedRate": "$55-80/hr"
+    "email": "ivan@freelancer.com",
+    "skills": [
+      "Next.js",
+      "Node.js",
+      "PostgreSQL",
+      "negotiation",
+      "financial structuring",
+      "team coordination",
+      "market research",
+      "project management"
+    ],
+    "experienceYears": 7,
+    "seniority": "Senior",
+    "notableProjects": [
+      "E-Commerce Backend",
+      "HealthTrack Dashboard"
+    ],
+    "suggestedRate": "$55-80/hr",
+    "telegramChatId": "5367731807",
+    "summary": "Experienced professional with a background in digital media expansion and financial deal structuring. Proven track record in managing analyst teams and negotiating multi-hundred thousand dollar lease and rental contracts.",
+    "additionalInfo": {
+      "PreferredStack": "Modern Web (Next.js, Tailwind)",
+      "Availability": "Immediate",
+      "Languages": [
+        "English (Native)",
+        "Luganda (Fluent)"
+      ]
+    }
   }
 ]
