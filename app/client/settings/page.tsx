@@ -30,7 +30,7 @@ export default function ClientSettings() {
         }
     };
     return (
-        <div className="max-w-3xl space-y-8">
+        <div className="max-w-3xl space-y-6 md:space-y-8">
             <div>
                 <h1 className="text-2xl font-bold text-gray-900">Client Settings</h1>
                 <p className="text-gray-500">Manage your company profile and preferences.</p>
@@ -38,14 +38,14 @@ export default function ClientSettings() {
 
             <div className="grid grid-cols-1 gap-6">
                 {/* Account Profile Section */}
-                <Card className="p-8 shadow-sm border-gray-100">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-[#35b544]">
-                            <User className="w-6 h-6" />
+                <Card className="p-6 sm:p-8 shadow-sm border-gray-100">
+                    <div className="flex items-center gap-4 mb-6 md:mb-8">
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-green-50 rounded-xl flex items-center justify-center text-[#35b544] shrink-0">
+                            <User className="w-5 h-5 md:w-6 md:h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900">Account Profile</h2>
-                            <p className="text-sm text-gray-500 font-medium">Update your company details and contact info.</p>
+                            <h2 className="text-lg md:text-xl font-bold text-gray-900">Account Profile</h2>
+                            <p className="text-xs md:text-sm text-gray-500 font-medium">Update your company details and contact info.</p>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -64,31 +64,31 @@ export default function ClientSettings() {
                 </Card>
 
                 {/* Notification Preferences Section */}
-                <Card className="p-8 shadow-sm border-gray-100">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-[#35b544]">
-                            <Bell className="w-6 h-6" />
+                <Card className="p-6 sm:p-8 shadow-sm border-gray-100">
+                    <div className="flex items-center gap-4 mb-6 md:mb-8">
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-green-50 rounded-xl flex items-center justify-center text-[#35b544] shrink-0">
+                            <Bell className="w-5 h-5 md:w-6 md:h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900">Notification Preferences</h2>
-                            <p className="text-sm text-gray-500 font-medium">Control how you receive project updates.</p>
+                            <h2 className="text-lg md:text-xl font-bold text-gray-900">Notification Preferences</h2>
+                            <p className="text-xs md:text-sm text-gray-500 font-medium">Control how you receive project updates.</p>
                         </div>
                     </div>
 
                     <div className="space-y-4">
-                        <div className="p-4 bg-gray-50/50 rounded-xl border border-gray-100 flex items-center justify-between">
+                        <div className="p-4 bg-gray-50/50 rounded-xl border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
                                 <span className="font-bold text-gray-800">WhatsApp Alerts</span>
                                 <Badge className="bg-green-100 text-[#35b544] border-green-200 hover:bg-green-100">Recommended</Badge>
                             </div>
-                            <Button className="gap-2 font-bold px-6 rounded-xl bg-[#35b544] hover:bg-[#2e9e3b]">
+                            <Button className="gap-2 font-bold px-6 rounded-xl bg-[#35b544] hover:bg-[#2e9e3b] w-full sm:w-auto">
                                 <MessageSquare className="h-4 w-4" />
                                 Connect WhatsApp
                             </Button>
                         </div>
 
                         <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-4">
-                            <div className="flex items-center justify-between">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                 <div className="flex items-center gap-3">
                                     <span className="font-bold text-gray-800">Telegram Notifications</span>
                                     <Badge className="bg-blue-100 text-blue-600 border-blue-200">Zero Setup</Badge>
@@ -105,7 +105,7 @@ export default function ClientSettings() {
 
                             {isEditingTelegram ? (
                                 <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
-                                    <div className="space-y-1">
+                                    <div className="space-y-1 text-left">
                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Bot Token</label>
                                         <input
                                             type="password"
@@ -115,7 +115,7 @@ export default function ClientSettings() {
                                             className="block w-full rounded-xl border-gray-200 py-2.5 px-4 text-xs text-gray-900 placeholder:text-gray-400 shadow-sm ring-1 ring-inset ring-gray-100 focus:ring-2 focus:ring-[#0088cc] outline-none"
                                         />
                                     </div>
-                                    <div className="space-y-1">
+                                    <div className="space-y-1 text-left">
                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">My Chat ID</label>
                                         <input
                                             type="text"
@@ -125,11 +125,11 @@ export default function ClientSettings() {
                                             className="block w-full rounded-xl border-gray-200 py-2.5 px-4 text-xs text-gray-900 placeholder:text-gray-400 shadow-sm ring-1 ring-inset ring-gray-100 focus:ring-2 focus:ring-[#0088cc] outline-none"
                                         />
                                     </div>
-                                    <div className="flex gap-2">
+                                    <div className="flex flex-col sm:flex-row gap-2">
                                         <Button
                                             onClick={handleSaveTelegram}
                                             disabled={saving}
-                                            className="flex-1 bg-[#0088cc] hover:bg-[#0077b5] gap-2 rounded-xl font-bold py-2 text-xs"
+                                            className="flex-1 bg-[#0088cc] hover:bg-[#0077b5] gap-2 rounded-xl font-bold py-2.5 text-xs h-10"
                                         >
                                             {saving ? <Cog className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
                                             Save Configuration
@@ -148,18 +148,18 @@ export default function ClientSettings() {
                                                 if (data.success) alert("Test notification sent!");
                                                 else alert("Error: " + data.error);
                                             }}
-                                            className="flex-1 border-[#0088cc] text-[#0088cc] hover:bg-blue-50 rounded-xl font-bold py-2 text-xs"
+                                            className="flex-1 border-[#0088cc] text-[#0088cc] hover:bg-blue-50 rounded-xl font-bold py-2.5 text-xs h-10"
                                         >
                                             Test Link
                                         </Button>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="flex items-center justify-between">
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                                     <p className="text-xs text-gray-500 font-medium">
                                         {telegramConfig.botToken ? "✅ Bot connected" : "❌ Bot not configured"}
                                     </p>
-                                    <Button className="gap-2 font-bold px-6 rounded-xl bg-[#0088cc] hover:bg-[#0077b5] text-white border-transparent text-xs h-9">
+                                    <Button className="gap-2 font-bold px-6 rounded-xl bg-[#0088cc] hover:bg-[#0077b5] text-white border-transparent text-xs h-9 w-full sm:w-auto">
                                         <Check className="h-3 w-3" />
                                         Bot Ready
                                     </Button>
@@ -167,7 +167,7 @@ export default function ClientSettings() {
                             )}
                         </div>
 
-                        <div className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100 gap-2">
                             <span className="font-bold text-gray-800">Email Summaries (Weekly)</span>
                             <Badge className="text-gray-400 border-gray-200 bg-transparent">Inactive</Badge>
                         </div>
@@ -175,18 +175,18 @@ export default function ClientSettings() {
                 </Card>
 
                 {/* Billing & Rates Section */}
-                <Card className="p-8 shadow-sm border-gray-100">
-                    <div className="flex items-center gap-4 mb-8">
-                        <div className="w-12 h-12 bg-green-50 rounded-xl flex items-center justify-center text-[#35b544]">
-                            <Wallet className="w-6 h-6" />
+                <Card className="p-6 sm:p-8 shadow-sm border-gray-100">
+                    <div className="flex items-center gap-4 mb-6 md:mb-8">
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-green-50 rounded-xl flex items-center justify-center text-[#35b544] shrink-0">
+                            <Wallet className="w-5 h-5 md:w-6 md:h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-bold text-gray-900">Billing & Rates</h2>
-                            <p className="text-sm text-gray-500 font-medium">Manage your preferred currency and rate cards.</p>
+                            <h2 className="text-lg md:text-xl font-bold text-gray-900">Billing & Rates</h2>
+                            <p className="text-xs md:text-sm text-gray-500 font-medium">Manage your preferred currency and rate cards.</p>
                         </div>
                     </div>
-                    <div className="flex items-center justify-between">
-                        <span className="font-bold text-gray-800">Default Currency</span>
+                    <div className="flex items-center justify-between p-4 bg-gray-50/50 rounded-xl border border-gray-100">
+                        <span className="font-bold text-gray-800 text-sm md:text-base">Default Currency</span>
                         <Badge className="bg-gray-900 text-white border-transparent px-4 py-1.5 font-bold">USD ($)</Badge>
                     </div>
                 </Card>

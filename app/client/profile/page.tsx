@@ -22,16 +22,16 @@ export default function ClientProfilePage() {
     if (!profile) return <div className="p-8">Loading profile...</div>;
 
     return (
-        <div className="p-8 max-w-4xl mx-auto">
-            <header className="flex justify-between items-center mb-8">
+        <div className="p-4 sm:p-8 max-w-4xl mx-auto">
+            <header className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                 <div>
-                    <h1 className="text-3xl font-bold text-gray-900">Business Profile</h1>
-                    <p className="text-gray-600 font-medium">Manage your company information and AI visibility.</p>
+                    <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Business Profile</h1>
+                    <p className="text-sm sm:text-base text-gray-600 font-medium">Manage your company information and AI visibility.</p>
                 </div>
                 <Button
                     variant={isEditing ? "primary" : "outline"}
                     onClick={() => setIsEditing(!isEditing)}
-                    className="gap-2"
+                    className="gap-2 w-full sm:w-auto"
                 >
                     {isEditing ? <Save className="w-4 h-4" /> : <Edit3 className="w-4 h-4" />}
                     {isEditing ? "Save Profile" : "Edit Profile"}

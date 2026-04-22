@@ -6,11 +6,11 @@ import { JobPost } from "@/types";
 
 export function ScopeAnalysis({ result }: { result: Partial<JobPost> }) {
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-8">
-                <Card className="p-8">
-                    <h2 className="text-2xl font-bold text-gray-900 mb-2">{result.title}</h2>
-                    <p className="text-gray-600 mb-8">{result.summary}</p>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+            <div className="lg:col-span-2 space-y-6 lg:space-y-8">
+                <Card className="p-6 sm:p-8">
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-2">{result.title}</h2>
+                    <p className="text-sm md:text-base text-gray-600 mb-6 md:mb-8">{result.summary}</p>
 
                     <h3 className="text-lg font-semibold text-gray-900 mb-4">Key Deliverables</h3>
                     <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-8">

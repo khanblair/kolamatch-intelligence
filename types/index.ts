@@ -40,6 +40,9 @@ export interface JobPost {
     scopeScore: ScopeScore;
     status: "draft" | "published" | "closed";
     createdAt: string;
+    budget?: string;
+    matchScore?: number;
+    skills?: string[];
 }
 
 export interface MatchingResult {

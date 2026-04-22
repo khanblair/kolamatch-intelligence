@@ -10,49 +10,49 @@ export default function LandingPage() {
     <div className="min-h-screen bg-white selection:bg-green-100">
       {/* Header */}
       <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
-        <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 h-16 md:h-20 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-10 h-10 bg-[#35b544] rounded-xl flex items-center justify-center">
-              <Sparkles className="text-white w-6 h-6" />
+            <div className="w-8 h-8 md:w-10 md:h-10 bg-[#35b544] rounded-xl flex items-center justify-center">
+              <Sparkles className="text-white w-5 h-5 md:w-6 md:h-6" />
             </div>
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#35b544] to-[#2e9e3b]">
-              KolaMatch Intelligence
+            <span className="text-xl md:text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#35b544] to-[#2e9e3b]">
+              KolaMatch
             </span>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             <Link href="/login">
-              <Button variant="ghost">Sign In</Button>
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Sign In</Button>
             </Link>
             <Link href="/login">
-              <Button>Get Started</Button>
+              <Button size="sm" className="md:size-md">Get Started</Button>
             </Link>
           </div>
         </div>
       </header>
 
       {/* Hero Section */}
-      <section className="pt-40 pb-20 px-4">
+      <section className="pt-32 md:pt-40 pb-16 md:pb-20 px-4">
         <div className="max-w-7xl mx-auto text-center">
-          <Badge className="mb-6 px-4 py-1.5 text-sm uppercase tracking-wider font-bold">
+          <Badge className="mb-6 px-4 py-1.5 text-[10px] md:text-sm uppercase tracking-wider font-bold">
             Built for Kolaborate Build Challenge
           </Badge>
-          <h1 className="text-6xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-8">
-            The AI Command Center for <br />
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight mb-6 md:mb-8 leading-[1.1]">
+            The AI Command Center for <br className="hidden md:block" />
             <span className="text-[#35b544]">Freelance Intelligence.</span>
           </h1>
-          <p className="max-w-2xl mx-auto text-xl text-gray-600 mb-12 leading-relaxed">
+          <p className="max-w-2xl mx-auto text-lg md:text-xl text-gray-600 mb-10 md:12 leading-relaxed">
             Eliminate scope creep and proposal fatigue.
             Transform raw project ideas into structured job posts and perfectly matched proposals in seconds.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/login">
-              <Button size="lg" className="h-16 px-10 text-lg gap-2 shadow-xl shadow-green-200">
+            <Link href="/login" className="w-full sm:w-auto">
+              <Button size="lg" className="h-14 md:h-16 w-full sm:w-auto px-10 text-lg gap-2 shadow-xl shadow-green-200">
                 Start Scoping Now
                 <ChevronRight className="w-5 h-5" />
               </Button>
             </Link>
-            <Button size="lg" variant="outline" className="h-16 px-10 text-lg">
-              View Demo CV Matching
+            <Button size="lg" variant="outline" className="h-14 md:h-16 w-full sm:w-auto px-10 text-lg">
+              View Demo
             </Button>
           </div>
         </div>
