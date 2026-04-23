@@ -22,7 +22,16 @@ export default function AdminWhatsAppPage() {
     }>({ status: "loading" });
     const [showQRModal, setShowQRModal] = useState(false);
 
-    const isConnected = ["isLogged", "synced", "chatsAvailable", "inChat"].includes(qrData.status || "");
+    const isConnected = [
+        "isLogged", 
+        "synced", 
+        "chatsAvailable", 
+        "inChat", 
+        "qrReadSuccess", 
+        "MAIN", 
+        "MAIN (NORMAL)", 
+        "CONNECTED"
+    ].includes(qrData.status || "");
 
     useEffect(() => {
         const fetchStatus = async () => {
@@ -76,7 +85,7 @@ export default function AdminWhatsAppPage() {
                                 the <span className="text-[#35b544]">AI Pulse</span>
                             </h2>
                             <p className="text-base text-gray-500 font-medium leading-relaxed">
-                                Manage the platform's official WhatsApp agent. Once linked, KolaMatch AI will handle career coaching and matchmaking automatically for all users.
+                                Manage the platform&apos;s official WhatsApp agent. Once linked, KolaMatch AI will handle career coaching and matchmaking automatically for all users.
                             </p>
                         </div>
 

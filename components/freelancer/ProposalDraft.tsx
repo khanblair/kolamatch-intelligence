@@ -35,7 +35,7 @@ export function ProposalDraft({
 
             <div className="flex justify-between items-center bg-green-50 p-4 rounded-lg border border-green-100">
                 <p className="text-sm text-green-800 font-medium">
-                    This draft references your matching skills and the client's deliverables.
+                    This draft references your matching skills and the client&apos;s deliverables.
                 </p>
                 <Button onClick={() => onSend(draft)} className="gap-2 shadow-lg shadow-green-100">
                     Submit Proposal

@@ -4,11 +4,13 @@
  */
 
 import * as wppconnect from "@wppconnect-team/wppconnect";
+import { FreelancerProfile, ClientProfile } from "@/types";
 import * as dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import OpenAI from "openai";
-const { PDFParse } = require("pdf-parse");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const PDFParse = require("pdf-parse");
 
 dotenv.config({ path: ".env.local" });
 
@@ -23,7 +25,7 @@ const MODEL = process.env.MODEL || "google/gemini-3-flash-preview";
 
 // Shared Logic
 const loadData = (p: string) => JSON.parse(fs.readFileSync(p, "utf-8") || (p.endsWith(".json") ? "[]" : "{}"));
-const saveData = (p: string, data: any) => fs.writeFileSync(p, JSON.stringify(data, null, 2));
+const saveData = (p: string, data: unknown) => fs.writeFileSync(p, JSON.stringify(data, null, 2));
 
 const SYSTEM_PROMPT = `
 You are KolaMatch Intelligence, a high-fidelity Career Agent and Profile Sync Engine.
@@ -70,13 +72,26 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
     const body = message.body || "";
     const isMedia = message.isMedia || message.type === 'document';
 
-    // Fetch current user context
+    // Fetch user context (Check both freelancers and clients)
     const freelancers = loadData(FREELANCERS_PATH);
+    const clients = loadData(CLIENTS_PATH);
     const userPhone = from.split('@')[0];
-    let freelancer = freelancers.find((f: any) => f.phone === userPhone) || freelancers[0];
 
-    // 📄 CV SYNC HANDLER (PDF PARSING on WhatsApp)
-    if (isMedia && message.type === 'document' && (message as any).filename?.toLowerCase().endsWith('.pdf')) {
+    let user: FreelancerProfile | ClientProfile | undefined = (freelancers as FreelancerProfile[]).find((f) => f.phone === userPhone);
+    let role = "freelancer";
+
+    if (!user) {
+        user = (clients as ClientProfile[]).find((c) => c.phone === userPhone);
+        role = "client";
+    }
+
+    // Guest state handling
+    if (!user) {
+        role = "guest";
+    }
+
+    // 📄 CV SYNC HANDLER (Freelancers only)
+    if ((role === "freelancer" || role === "guest") && isMedia && message.type === 'document' && (message as { filename?: string }).filename?.toLowerCase().endsWith('.pdf')) {
         try {
             await client.sendText(from, "📥 *Processing your CV...* I'm extracting your latest skills and experience.");
 
@@ -92,7 +107,7 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
                         role: "system",
                         content: `You are the KolaMatch Intelligence Full Profile Sync Engine.
                         Intelligently merge this CV data into the Current User Profile.
-                        CURRENT PROFILE: ${JSON.stringify(freelancer)}
+                        CURRENT PROFILE: ${JSON.stringify(user)}
                         Return ONLY a valid JSON block for the updated profile.`
                     },
                     { role: "user", content: `RESUME TEXT:\n${resumeText}` }
@@ -103,31 +118,34 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
             const extracted = extractJson(rawResponse);
 
             if (extracted) {
-                // Update user profile
-                const index = freelancers.findIndex((f: any) => f.phone === userPhone) || 0;
-                freelancers[index] = { ...freelancers[index], ...extracted, phone: userPhone };
+                // Update freelancer profile
+                const index = (freelancers as FreelancerProfile[]).findIndex((f) => f.phone === userPhone);
+                if (index > -1) {
+                    freelancers[index] = { ...freelancers[index], ...extracted, phone: userPhone };
+                } else {
+                    // Create/Update based on phone if first time
+                    freelancers[0] = { ...freelancers[0], ...extracted, phone: userPhone };
+                }
                 saveData(FREELANCERS_PATH, freelancers);
 
                 await client.sendText(from, `✅ *Profile Synced!* 🚀\n\nI've performed a full sync of your profile via WhatsApp:\n• *Key Skills:* ${extracted.skills?.slice(0, 5).join(", ")}...\n• *Seniority:* ${extracted.seniority}\n• *Experience:* ${extracted.experienceYears} Years`);
-            } else {
-                throw new Error("Failed to extract JSON from AI response.");
             }
             return;
         } catch (e) {
             console.error("WhatsApp CV Error:", e);
-            await client.sendText(from, "⚠️ Sorry, I had trouble parsing that CV. Please ensure it's a valid PDF.");
+            await client.sendText(from, "⚠️ Sorry, I had trouble parsing that CV.");
             return;
         }
     }
 
-    // Handle explicit commands for parity with Telegram
+    // Handle explicit commands
     const command = body.toLowerCase().trim();
     if (command === '/jobs' || command === 'find jobs') {
         const response = await ai.chat.completions.create({
             model: MODEL,
             messages: [
                 { role: "system", content: SYSTEM_PROMPT },
-                { role: "user", content: `I am ${freelancer.name}. Based on my profile, find the best job matches for me. Format with bullet points.` }
+                { role: "user", content: `I am ${user?.name || "unidentified"} (${role}). Based on available data, provide insights or job matches. Format with bullet points.` }
             ]
         });
         await client.sendText(from, response.choices[0].message.content || "🔍 No job matches found.");
@@ -139,7 +157,7 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
             model: MODEL,
             messages: [
                 { role: "system", content: SYSTEM_PROMPT },
-                { role: "user", content: `I am ${freelancer.name}. Display my profile and provide career coaching insights.` }
+                { role: "user", content: `I am ${user?.name || "unidentified"} (${role}). Display my profile and provide role-specific AI insights.` }
             ]
         });
         await client.sendText(from, response.choices[0].message.content || "👤 Profile loaded.");
@@ -147,7 +165,12 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
     }
 
     if (command === '/help' || command === 'help') {
-        await client.sendText(from, "👋 *KolaMatch AI Assistant*\n\nCommands:\n• */jobs* - Find matching projects\n• */profile* - View my profile & AI coaching\n• *Upload PDF* - Intelligently sync CV\n• *Chat* - Ask me anything about your career!");
+        const helpText = role === "client"
+            ? "👋 *KolaMatch AI Client Assistant*\n\nCommands:\n• */jobs* - Review your posted jobs & matches\n• */profile* - View company profile\n• *Chat* - Ask about scoping or finding talent!"
+            : role === "guest"
+                ? "👋 *KolaMatch AI Assistant*\n\nIt looks like your number isn't linked to a profile yet.\n\nCommands:\n• *Chat* - Ask me anything!\n• */help* - See this message\n\n*Pro Tip:* Link your number in the KolaMatch Web Settings to unlock matches and CV sync!"
+                : "👋 *KolaMatch AI Career Assistant*\n\nCommands:\n• */jobs* - Find matching projects\n• */profile* - View my profile & AI coaching\n• *Upload PDF* - Intelligently sync CV\n• *Chat* - Ask me anything about your career!";
+        await client.sendText(from, helpText);
         return;
     }
 
@@ -155,10 +178,12 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
     if (body) {
         const DYNAMIC_PROMPT = `
 ${SYSTEM_PROMPT}
-CURRENT USER PROFILE: ${JSON.stringify(freelancer)}
-INSTRUCTIONS: 
-- Be CONCISE and use WhatsApp-friendly formatting (bold for titles, etc.).
-- Use the person's name (${freelancer.name}) naturally.
+CURRENT USER: ${user?.name || "Guest"} (${role})
+USER DATA: ${JSON.stringify(user || { status: "unlinked" })}
+
+If role is 'guest', politely ask them to link their WhatsApp in the KolaMatch Settings.
+If role is 'client', focus on their active jobs and finding freelancers.
+If role is 'freelancer', focus on career coaching and job matches.
 `;
 
         try {
@@ -175,9 +200,17 @@ INSTRUCTIONS:
                 const sync = extractJson(jsonPart);
 
                 if (sync && sync.updates) {
-                    const index = freelancers.findIndex((f: any) => f.phone === userPhone) || 0;
-                    freelancers[index] = { ...freelancers[index], ...sync.updates, phone: userPhone };
-                    saveData(FREELANCERS_PATH, freelancers);
+                    if (role === "client") {
+                        const index = (clients as ClientProfile[]).findIndex((c) => c.phone === userPhone);
+                        if (index > -1) {
+                            clients[index] = { ...clients[index], ...sync.updates, phone: userPhone };
+                            saveData(CLIENTS_PATH, clients);
+                        }
+                    } else {
+                        const index = (freelancers as FreelancerProfile[]).findIndex((f) => f.phone === userPhone) || 0;
+                        freelancers[index] = { ...freelancers[index], ...sync.updates, phone: userPhone };
+                        saveData(FREELANCERS_PATH, freelancers);
+                    }
 
                     const cleanReply = parts[0].trim();
                     await client.sendText(from, cleanReply || "✅ Profile updated and synced!");
@@ -221,25 +254,68 @@ wppconnect
     .then(async (client) => {
         console.log("🤖 WhatsApp Agent Starting...");
 
-        // Capture and broadcast login info
-        const me = await client.getHostDevice();
-        console.log(`✅ Logged in as: ${me.wid.user} (${me.pushname})`);
+        try {
+            // Capture and broadcast login info
+            const me = (await client.getHostDevice()) as unknown as {
+                wid?: { user: string },
+                id?: { user: string },
+                pushname?: string,
+                platform?: string
+            };
+            const phone = me?.wid?.user || me?.id?.user || "Unknown";
+            const name = me?.pushname || "KolaMatch Bot";
+            const device = me?.platform || "Web";
 
-        saveData(path.join(DATA_DIR, "whatsapp-qr.json"), {
-            status: "isLogged",
-            updatedAt: new Date().toISOString(),
-            user: {
-                phone: me.wid.user,
-                name: me.pushname,
-                device: me.platform
-            }
-        });
+            console.log(`✅ Logged in as: ${phone} (${name}) on ${device}`);
 
-        // Send Welcome Message (to the bot's own number as a confirmation, or we can wait for first message)
-        // Usually, we want to welcome the user who just scanned. 
-        // But wppconnect's 'create' doesn't easily give the dynamic 'scanner' ID in a clean way unless we use another event.
-        // For now, we'll ensure the UI shows the connected number.
+            saveData(path.join(DATA_DIR, "whatsapp-qr.json"), {
+                status: "isLogged",
+                updatedAt: new Date().toISOString(),
+                user: {
+                    phone: phone,
+                    name: name,
+                    device: device
+                }
+            });
+        } catch (e) {
+            console.error("Error fetching host device info:", e);
+            // Still update status to isLogged so the UI knows we are connected
+            saveData(path.join(DATA_DIR, "whatsapp-qr.json"), {
+                status: "isLogged",
+                updatedAt: new Date().toISOString(),
+                user: {
+                    phone: "Unknown",
+                    name: "WhatsApp Agent",
+                    device: "Connected"
+                }
+            });
+        }
 
         client.onMessage((message) => handleMessage(client, message));
+
+        // 🚀 EXPOSE NOTIFICATION ENDPOINT FOR SYSTEM ALERTS
+        console.log("🌐 Starting Notification Bridge on port 3001...");
+        // @ts-expect-error - Bun is available at runtime
+        Bun.serve({
+            port: 3001,
+            async fetch(req: Request) {
+                const url = new URL(req.url);
+                if (url.pathname === "/send" && req.method === "POST") {
+                    try {
+                        const { phone, message } = await req.json();
+                        const target = phone.includes("@") ? phone : `${phone}@c.us`;
+
+                        await client.sendText(target, message);
+                        console.log(`📡 [Bridge] Message sent to ${phone}`);
+
+                        return Response.json({ success: true });
+                    } catch (e) {
+                        console.error("Bridge Error:", e);
+                        return Response.json({ success: false, error: String(e) }, { status: 500 });
+                    }
+                }
+                return new Response("KolaMatch WhatsApp Bridge", { status: 200 });
+            },
+        });
     })
     .catch((error) => console.log(error));

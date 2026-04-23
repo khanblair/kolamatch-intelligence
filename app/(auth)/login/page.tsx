@@ -57,7 +57,7 @@ export default function LoginPage() {
                             role === "client" ? "bg-white shadow-sm text-[#35b544]" : "text-gray-500 hover:text-gray-700"
                         )}
                     >
-                        I'm a Client
+                        I&apos;m a Client
                     </button>
                     <button
                         onClick={() => setRole("freelancer")}
@@ -66,7 +66,7 @@ export default function LoginPage() {
                             role === "freelancer" ? "bg-white shadow-sm text-[#35b544]" : "text-gray-500 hover:text-gray-700"
                         )}
                     >
-                        I'm a Freelancer
+                        I&apos;m a Freelancer
                     </button>
                 </div>
 

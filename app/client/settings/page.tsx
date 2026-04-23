@@ -4,15 +4,24 @@ import { useState, useEffect } from "react";
 import { Card, Button, Badge } from "@/components/ui";
 import { User, Bell, Shield, Wallet, MessageSquare, Cog, Check, Save, Loader2 } from "lucide-react";
 
+import { ClientProfile } from "@/types";
+import { ConnectWhatsApp } from "@/components/shared/ConnectWhatsApp";
+
 export default function ClientSettings() {
     const [isEditingTelegram, setIsEditingTelegram] = useState(false);
     const [telegramConfig, setTelegramConfig] = useState({ botToken: "", chatId: "" });
     const [saving, setSaving] = useState(false);
+    const [userProfile, setUserProfile] = useState<ClientProfile | null>(null);
 
     useEffect(() => {
         fetch("/api/config")
             .then(res => res.json())
             .then(data => setTelegramConfig(data.telegram));
+
+        // Mock current user c1
+        fetch("/api/profile?role=client&id=c1")
+            .then(res => res.json())
+            .then(setUserProfile);
     }, []);
 
     const handleSaveTelegram = async () => {
@@ -40,7 +49,6 @@ export default function ClientSettings() {
 
     // Poll for QR Code or Initial Status
     useEffect(() => {
-        let interval: NodeJS.Timeout;
         const fetchStatus = async () => {
             try {
                 const res = await fetch("/api/whatsapp/qr");
@@ -57,7 +65,7 @@ export default function ClientSettings() {
         };
 
         fetchStatus(); // Initial fetch
-        interval = setInterval(fetchStatus, 5000); // Background poll
+        const interval = setInterval(fetchStatus, 5000); // Background poll
 
         return () => clearInterval(interval);
     }, [showWhatsAppQR]);
@@ -118,30 +126,31 @@ export default function ClientSettings() {
 
             <div className="grid grid-cols-1 gap-6">
                 {/* Account Profile Section */}
-                <Card className="p-6 sm:p-8 shadow-sm border-gray-100">
-                    <div className="flex items-center gap-4 mb-6 md:mb-8">
-                        <div className="w-10 h-10 md:w-12 md:h-12 bg-green-50 rounded-xl flex items-center justify-center text-[#35b544] shrink-0">
-                            <User className="w-5 h-5 md:w-6 md:h-6" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                    <ConnectWhatsApp role="client" userId="c1" initialPhone={userProfile?.phone} />
+
+                    <Card className="p-6 sm:p-8 shadow-sm border-gray-100">
+                        <div className="flex items-center gap-4 mb-6 md:mb-8">
+                            <div className="w-10 h-10 md:w-12 md:h-12 bg-green-50 rounded-xl flex items-center justify-center text-[#35b544] shrink-0">
+                                <User className="w-5 h-5 md:w-6 md:h-6" />
+                            </div>
+                            <div>
+                                <h2 className="text-lg md:text-xl font-bold text-gray-900">Account Profile</h2>
+                                <p className="text-xs md:text-sm text-gray-500 font-medium">Update company contact info.</p>
+                            </div>
                         </div>
-                        <div>
-                            <h2 className="text-lg md:text-xl font-bold text-gray-900">Account Profile</h2>
-                            <p className="text-xs md:text-sm text-gray-500 font-medium">Update your company details and contact info.</p>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Company</label>
+                                <p className="text-gray-900 font-bold text-sm">Kola Logistics Ltd</p>
+                            </div>
+                            <div className="space-y-1">
+                                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Industry</label>
+                                <p className="text-gray-900 font-bold text-sm">Logistics</p>
+                            </div>
                         </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Company Name</label>
-                            <p className="text-gray-900 font-semibold text-lg">Kolaborate Africa</p>
-                        </div>
-                        <div className="space-y-1">
-                            <label className="text-xs font-bold text-gray-400 uppercase tracking-widest">Industry</label>
-                            <p className="text-gray-900 font-semibold text-lg">Tech & Outsourcing</p>
-                        </div>
-                    </div>
-                    <div className="mt-8 pt-6 border-t border-gray-100 flex justify-end">
-                        <Button variant="outline" className="px-6 rounded-xl font-bold border-gray-200">Edit Profile</Button>
-                    </div>
-                </Card>
+                    </Card>
+                </div>
 
                 {/* Notification Preferences Section */}
                 <Card className="p-6 sm:p-8 shadow-sm border-gray-100">

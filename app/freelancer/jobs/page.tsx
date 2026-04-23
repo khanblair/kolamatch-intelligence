@@ -28,7 +28,7 @@ export default function FreelancerJobsPage() {
             <div className="grid grid-cols-1 gap-4">
                 {appliedJobs.length === 0 && (
                     <Card className="p-12 text-center text-gray-400">
-                        You haven't applied to any projects yet.
+                        You haven&apos;t applied to any projects yet.
                     </Card>
                 )}
 

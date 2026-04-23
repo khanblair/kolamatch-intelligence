@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Card, Button, Badge } from "@/components/ui";
 import { Upload, FileCheck, Loader2, Bell, MessageSquare, ShieldCheck, Cog, Save, Check } from "lucide-react";
 import { FreelancerProfile } from "@/types";
+import { ConnectWhatsApp } from "@/components/shared/ConnectWhatsApp";
 
 export default function FreelancerSettings() {
     const [uploading, setUploading] = useState(false);
@@ -11,11 +12,17 @@ export default function FreelancerSettings() {
     const [isEditingTelegram, setIsEditingTelegram] = useState(false);
     const [telegramConfig, setTelegramConfig] = useState({ botToken: "", chatId: "" });
     const [saving, setSaving] = useState(false);
+    const [userProfile, setUserProfile] = useState<FreelancerProfile | null>(null);
 
     useEffect(() => {
         fetch("/api/config")
             .then(res => res.json())
             .then(data => setTelegramConfig(data.telegram));
+
+        // Mock current user f2 (Ivan)
+        fetch("/api/profile?role=freelancer&id=f2")
+            .then(res => res.json())
+            .then(setUserProfile);
     }, []);
 
     const handleSaveTelegram = async () => {
@@ -65,7 +72,6 @@ export default function FreelancerSettings() {
 
     // Poll for QR Code or Initial Status
     useEffect(() => {
-        let interval: NodeJS.Timeout;
         const fetchStatus = async () => {
             try {
                 const res = await fetch("/api/whatsapp/qr");
@@ -82,7 +88,7 @@ export default function FreelancerSettings() {
         };
 
         fetchStatus(); // Initial fetch
-        interval = setInterval(fetchStatus, 5000); // Background poll
+        const interval = setInterval(fetchStatus, 5000); // Background poll
 
         return () => clearInterval(interval);
     }, [showWhatsAppQR]);
@@ -142,114 +148,118 @@ export default function FreelancerSettings() {
             </div>
 
             {/* Notification Preferences Section */}
-            <Card className="p-6 sm:p-8 shadow-sm border-gray-100">
-                <div className="flex items-center gap-4 mb-6 md:mb-8">
-                    <div className="w-10 h-10 md:w-12 md:h-12 bg-green-50 rounded-xl flex items-center justify-center text-[#35b544] shrink-0">
-                        <Bell className="w-5 h-5 md:w-6 md:h-6" />
-                    </div>
-                    <div>
-                        <h2 className="text-lg md:text-xl font-bold text-gray-900">Notification Preferences</h2>
-                        <p className="text-xs md:text-sm text-gray-500 font-medium">Get matched projects delivered instantly.</p>
-                    </div>
-                </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                <ConnectWhatsApp role="freelancer" userId="f2" initialPhone={userProfile?.phone} />
 
-                <div className="space-y-4">
-                    <div className="p-4 bg-gray-50/50 rounded-xl border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                        <div className="flex items-center gap-3">
-                            <span className="font-bold text-gray-800">WhatsApp Match Alerts</span>
-                            <Badge className={isConnected ? "bg-green-100 text-[#35b544]" : "bg-gray-100 text-gray-400"}>
-                                {isConnected ? "Active" : "Linked via Admin"}
-                            </Badge>
+                <Card className="p-6 sm:p-8 shadow-sm border-gray-100">
+                    <div className="flex items-center gap-4 mb-6 md:mb-8">
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-green-50 rounded-xl flex items-center justify-center text-[#35b544] shrink-0">
+                            <Bell className="w-5 h-5 md:w-6 md:h-6" />
                         </div>
-                        {isConnected && qrData.user && (
-                            <div className="text-right hidden sm:block">
-                                <p className="text-xs font-bold text-gray-900">{qrData.user.name}</p>
-                                <p className="text-[10px] text-gray-400 font-medium">+{qrData.user.phone}</p>
-                            </div>
-                        )}
+                        <div>
+                            <h2 className="text-lg md:text-xl font-bold text-gray-900">Notifications</h2>
+                            <p className="text-xs md:text-sm text-gray-500 font-medium">Manage other alerts.</p>
+                        </div>
                     </div>
 
-                    <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-4">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="space-y-4">
+                        <div className="p-4 bg-gray-50/50 rounded-xl border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div className="flex items-center gap-3">
-                                <span className="font-bold text-gray-800">Telegram Match Alerts</span>
-                                <Badge className="bg-blue-100 text-blue-600 border-blue-200">Zero Setup</Badge>
+                                <span className="font-bold text-gray-800">WhatsApp Match Alerts</span>
+                                <Badge className={isConnected ? "bg-green-100 text-[#35b544]" : "bg-gray-100 text-gray-400"}>
+                                    {isConnected ? "Active" : "Linked via Admin"}
+                                </Badge>
                             </div>
-                            <Button
-                                variant="ghost"
-                                size="sm"
-                                onClick={() => setIsEditingTelegram(!isEditingTelegram)}
-                                className="text-gray-400 hover:text-[#0088cc] h-8 w-8 p-0"
-                            >
-                                <Cog className="h-4 w-4" />
-                            </Button>
+                            {isConnected && qrData.user && (
+                                <div className="text-right hidden sm:block">
+                                    <p className="text-xs font-bold text-gray-900">{qrData.user.name}</p>
+                                    <p className="text-[10px] text-gray-400 font-medium">+{qrData.user.phone}</p>
+                                </div>
+                            )}
                         </div>
 
-                        {isEditingTelegram ? (
-                            <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Bot Token</label>
-                                    <input
-                                        type="password"
-                                        value={telegramConfig.botToken}
-                                        onChange={(e) => setTelegramConfig({ ...telegramConfig, botToken: e.target.value })}
-                                        placeholder="123456789:ABCDE..."
-                                        className="block w-full rounded-xl border-gray-200 py-2.5 px-4 text-xs text-gray-900 placeholder:text-gray-400 shadow-sm ring-1 ring-inset ring-gray-100 focus:ring-2 focus:ring-[#0088cc] outline-none"
-                                    />
-                                </div>
-                                <div className="space-y-1">
-                                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">My Chat ID</label>
-                                    <input
-                                        type="text"
-                                        value={telegramConfig.chatId}
-                                        onChange={(e) => setTelegramConfig({ ...telegramConfig, chatId: e.target.value })}
-                                        placeholder="e.g. 987654321"
-                                        className="block w-full rounded-xl border-gray-200 py-2.5 px-4 text-xs text-gray-900 placeholder:text-gray-400 shadow-sm ring-1 ring-inset ring-gray-100 focus:ring-2 focus:ring-[#0088cc] outline-none"
-                                    />
-                                </div>
-                                <div className="flex flex-col sm:flex-row gap-2">
-                                    <Button
-                                        onClick={handleSaveTelegram}
-                                        disabled={saving}
-                                        className="flex-1 bg-[#0088cc] hover:bg-[#0077b5] gap-2 rounded-xl font-bold py-2.5 text-xs h-10"
-                                    >
-                                        {saving ? <Cog className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
-                                        Save Configuration
-                                    </Button>
-                                    <Button
-                                        variant="outline"
-                                        onClick={async () => {
-                                            const res = await fetch("/api/telegram/notify", {
-                                                method: "POST",
-                                                body: JSON.stringify({
-                                                    chatId: telegramConfig.chatId,
-                                                    message: "🔔 *KolaMatch Intelligence Test*\n\nYour Telegram integration is working perfectly! 🚀"
-                                                })
-                                            });
-                                            const data = await res.json();
-                                            if (data.success) alert("Test notification sent!");
-                                            else alert("Error: " + data.error);
-                                        }}
-                                        className="flex-1 border-[#0088cc] text-[#0088cc] hover:bg-blue-50 rounded-xl font-bold py-2.5 text-xs h-10"
-                                    >
-                                        Test Link
-                                    </Button>
-                                </div>
-                            </div>
-                        ) : (
+                        <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-4">
                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                                <p className="text-xs text-gray-500 font-medium">
-                                    {telegramConfig.botToken ? "✅ Bot connected" : "❌ Bot not configured"}
-                                </p>
-                                <Button className="gap-2 font-bold px-6 rounded-xl bg-[#0088cc] hover:bg-[#0077b5] text-white border-transparent text-xs h-9 w-full sm:w-auto">
-                                    <Check className="h-3 w-3" />
-                                    Bot Ready
+                                <div className="flex items-center gap-3">
+                                    <span className="font-bold text-gray-800">Telegram Match Alerts</span>
+                                    <Badge className="bg-blue-100 text-blue-600 border-blue-200">Zero Setup</Badge>
+                                </div>
+                                <Button
+                                    variant="ghost"
+                                    size="sm"
+                                    onClick={() => setIsEditingTelegram(!isEditingTelegram)}
+                                    className="text-gray-400 hover:text-[#0088cc] h-8 w-8 p-0"
+                                >
+                                    <Cog className="h-4 w-4" />
                                 </Button>
                             </div>
-                        )}
+
+                            {isEditingTelegram ? (
+                                <div className="space-y-4 animate-in fade-in slide-in-from-top-2">
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">Bot Token</label>
+                                        <input
+                                            type="password"
+                                            value={telegramConfig.botToken}
+                                            onChange={(e) => setTelegramConfig({ ...telegramConfig, botToken: e.target.value })}
+                                            placeholder="123456789:ABCDE..."
+                                            className="block w-full rounded-xl border-gray-200 py-2.5 px-4 text-xs text-gray-900 placeholder:text-gray-400 shadow-sm ring-1 ring-inset ring-gray-100 focus:ring-2 focus:ring-[#0088cc] outline-none"
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest ml-1">My Chat ID</label>
+                                        <input
+                                            type="text"
+                                            value={telegramConfig.chatId}
+                                            onChange={(e) => setTelegramConfig({ ...telegramConfig, chatId: e.target.value })}
+                                            placeholder="e.g. 987654321"
+                                            className="block w-full rounded-xl border-gray-200 py-2.5 px-4 text-xs text-gray-900 placeholder:text-gray-400 shadow-sm ring-1 ring-inset ring-gray-100 focus:ring-2 focus:ring-[#0088cc] outline-none"
+                                        />
+                                    </div>
+                                    <div className="flex flex-col sm:flex-row gap-2">
+                                        <Button
+                                            onClick={handleSaveTelegram}
+                                            disabled={saving}
+                                            className="flex-1 bg-[#0088cc] hover:bg-[#0077b5] gap-2 rounded-xl font-bold py-2.5 text-xs h-10"
+                                        >
+                                            {saving ? <Cog className="h-3 w-3 animate-spin" /> : <Save className="h-3 w-3" />}
+                                            Save Configuration
+                                        </Button>
+                                        <Button
+                                            variant="outline"
+                                            onClick={async () => {
+                                                const res = await fetch("/api/telegram/notify", {
+                                                    method: "POST",
+                                                    body: JSON.stringify({
+                                                        chatId: telegramConfig.chatId,
+                                                        message: "🔔 *KolaMatch Intelligence Test*\n\nYour Telegram integration is working perfectly! 🚀"
+                                                    })
+                                                });
+                                                const data = await res.json();
+                                                if (data.success) alert("Test notification sent!");
+                                                else alert("Error: " + data.error);
+                                            }}
+                                            className="flex-1 border-[#0088cc] text-[#0088cc] hover:bg-blue-50 rounded-xl font-bold py-2.5 text-xs h-10"
+                                        >
+                                            Test Link
+                                        </Button>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                    <p className="text-xs text-gray-500 font-medium">
+                                        {telegramConfig.botToken ? "✅ Bot connected" : "❌ Bot not configured"}
+                                    </p>
+                                    <Button className="gap-2 font-bold px-6 rounded-xl bg-[#0088cc] hover:bg-[#0077b5] text-white border-transparent text-xs h-9 w-full sm:w-auto">
+                                        <Check className="h-3 w-3" />
+                                        Bot Ready
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
                     </div>
-                </div>
-            </Card>
+                </Card>
+            </div>
 
             {/* CV Upload Section */}
             <Card className="p-6 sm:p-8 shadow-sm border-gray-100">

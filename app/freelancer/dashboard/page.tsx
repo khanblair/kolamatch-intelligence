@@ -22,7 +22,7 @@ export default function FreelancerDashboard() {
                 <p className="text-gray-500">Based on your CV and skills.</p>
             </div>
 
-            <div className="space-y-6">
+            <div className="space-y-8">
                 {jobs.length === 0 && (
                     <Card className="p-12 text-center text-gray-500">
                         No projects matched yet. Make sure your CV is up to date in Settings.

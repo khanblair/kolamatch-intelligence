@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateCompletion, MODELS } from "@/lib/ai/openrouter";
+import { generateCompletion, Message } from "@/lib/ai/openrouter";
 import { SCOPING_SYSTEM_PROMPT } from "@/lib/ai/prompts";
 
 export async function POST(req: Request) {
@@ -12,13 +12,12 @@ export async function POST(req: Request) {
                 { status: 400 }
             );
         }
-
-        const messages = [
+        const messages: Message[] = [
             { role: "system", content: SCOPING_SYSTEM_PROMPT },
             { role: "user", content: rawInput },
         ];
 
-        const result = await generateCompletion(messages as any);
+        const result = await generateCompletion(messages);
 
         // Parse the JSON result from the AI
         let parsedResult;
@@ -36,10 +35,11 @@ export async function POST(req: Request) {
         }
 
         return NextResponse.json(parsedResult);
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("Scoping API Error:", error);
+        const errorMessage = error instanceof Error ? error.message : "Internal Server Error";
         return NextResponse.json(
-            { error: error.message || "Internal Server Error" },
+            { error: errorMessage },
             { status: 500 }
         );
     }

@@ -7,13 +7,18 @@
 export async function sendWhatsAppNotification(phone: string, message: string) {
     console.log(`[WhatsApp] Sending to ${phone}: ${message}`);
 
-    // In a real demo with wppconnect running locally, we would fetch a local endpoint:
-    // await fetch('http://localhost:3001/message/sendText', {
-    //   method: 'POST',
-    //   body: JSON.stringify({ phone, message })
-    // });
+    try {
+        const response = await fetch('http://127.0.0.1:3001/send', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ phone, message })
+        });
 
-    return { success: true };
+        return await response.json();
+    } catch (error) {
+        console.error("WhatsApp Send Error:", error);
+        return { success: false, error: "Bridge not connected" };
+    }
 }
 
 export const NOTIFICATION_TEMPLATES = {

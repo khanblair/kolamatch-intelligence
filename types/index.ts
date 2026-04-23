@@ -4,12 +4,27 @@ export interface FreelancerProfile {
     id: string;
     name: string;
     email: string;
+    phone?: string;
     skills: string[];
     experienceYears: number;
     seniority: "junior" | "mid" | "senior";
     notableProjects: string[];
     cvText?: string;
     suggestedRate?: string;
+    telegramChatId?: string;
+    summary?: string;
+    additionalInfo?: Record<string, unknown>;
+}
+
+export interface ClientProfile {
+    id: string;
+    name: string;
+    industry: string;
+    description: string;
+    contactPerson: string;
+    email: string;
+    phone?: string;
+    telegramChatId?: string;
 }
 
 export interface ScopeScore {

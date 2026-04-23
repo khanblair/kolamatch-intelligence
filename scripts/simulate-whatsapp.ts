@@ -12,10 +12,10 @@ const QR_FILE = path.join(DATA_DIR, "whatsapp-qr.json");
 
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
-const saveData = (data: any) => {
+const saveData = (data: unknown) => {
     if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR);
     fs.writeFileSync(QR_FILE, JSON.stringify(data, null, 2));
-    console.log(`[SIMULATOR] Status updated: ${data.status}`);
+    console.log(`[SIMULATOR] Status updated: ${(data as { status?: string }).status}`);
 };
 
 async function simulate() {

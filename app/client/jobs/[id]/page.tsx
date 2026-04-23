@@ -7,11 +7,36 @@ import { ArrowLeft, Users, Brain, BarChart3, Settings2, ShieldCheck, Mail, Chevr
 import Link from "next/link";
 import { JobPost, FreelancerProfile } from "@/types";
 
+const MOCK_MATCHES: (FreelancerProfile & { matchScore: number; fitReason: string })[] = [
+    {
+        id: "f2",
+        name: "Ivan Ssempijja",
+        email: "ivan@freelancer.com",
+        skills: ["Next.js", "Node.js", "PostgreSQL"],
+        experienceYears: 7,
+        seniority: "senior",
+        notableProjects: ["E-Commerce Backend"],
+        matchScore: 92,
+        fitReason: "Strong synergy with required Node.js backend and local market experience."
+    },
+    {
+        id: "f1",
+        name: "Kezia Namugga",
+        email: "kezia@example.com",
+        skills: ["React Native", "TypeScript", "Mobile Money API"],
+        experienceYears: 4,
+        seniority: "mid",
+        notableProjects: ["SafeRide App"],
+        matchScore: 88,
+        fitReason: "Expert in Mobile Money integration, which is critical for this project."
+    }
+];
+
 export default function ClientJobDetailsPage() {
     const { id } = useParams();
     const router = useRouter();
     const [job, setJob] = useState<JobPost | null>(null);
-    const [matches, setMatches] = useState<(FreelancerProfile & { matchScore: number; fitReason: string })[]>([]);
+    const [matches, setMatches] = useState<(FreelancerProfile & { matchScore: number; fitReason: string })[]>(MOCK_MATCHES);
 
     useEffect(() => {
         // Fetch job details
@@ -21,32 +46,6 @@ export default function ClientJobDetailsPage() {
                 const found = data.find(j => j.id === id);
                 setJob(found || null);
             });
-
-        // Mock fetch matches
-        setMatches([
-            {
-                id: "f2",
-                name: "Ivan Ssempijja",
-                email: "ivan@freelancer.com",
-                skills: ["Next.js", "Node.js", "PostgreSQL"],
-                experienceYears: 7,
-                seniority: "senior",
-                notableProjects: ["E-Commerce Backend"],
-                matchScore: 92,
-                fitReason: "Strong synergy with required Node.js backend and local market experience."
-            },
-            {
-                id: "f1",
-                name: "Kezia Namugga",
-                email: "kezia@example.com",
-                skills: ["React Native", "TypeScript", "Mobile Money API"],
-                experienceYears: 4,
-                seniority: "mid",
-                notableProjects: ["SafeRide App"],
-                matchScore: 88,
-                fitReason: "Expert in Mobile Money integration, which is critical for this project."
-            }
-        ]);
     }, [id]);
 
     if (!job) return <div className="p-8">Loading job dashboard...</div>;
@@ -123,7 +122,7 @@ export default function ClientJobDetailsPage() {
                                         </div>
                                         <div className="p-2.5 bg-blue-50/30 rounded-lg border border-blue-100/50">
                                             <p className="text-[10px] text-blue-700 italic font-medium leading-relaxed">
-                                                "AI Insight: {freelancer.fitReason}"
+                                                &quot;AI Insight: {freelancer.fitReason}&quot;
                                             </p>
                                         </div>
                                         <div className="flex flex-wrap gap-1.5">

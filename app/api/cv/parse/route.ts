@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { generateCompletion, MODELS } from "@/lib/ai/openrouter";
+import { generateCompletion, Message } from "@/lib/ai/openrouter";
 
 // Utility to extract text from a PDF (Mocked for demo, as actual PDF parsing inside Next.js needs heavy deps like pdf-parse)
 // In a real scenario, we'd use a server action or a dedicated microservice.
@@ -21,16 +21,16 @@ export async function POST(req: Request) {
       Return ONLY valid JSON.
     `;
 
-        const messages = [
+        const messages: Message[] = [
             { role: "system", content: systemPrompt },
             { role: "user", content: text }
         ];
 
-        const result = await generateCompletion(messages as any);
+        const result = await generateCompletion(messages);
         const parsed = JSON.parse(result || "{}");
 
         return NextResponse.json(parsed);
-    } catch (error: any) {
-        return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (error: unknown) {
+        return NextResponse.json({ error: error instanceof Error ? error.message : String(error) }, { status: 500 });
     }
 }

@@ -4,11 +4,13 @@
  */
 
 import { Telegraf, Markup } from "telegraf";
+import { FreelancerProfile, ClientProfile } from "@/types";
 import * as dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
 import OpenAI from "openai";
-const { PDFParse } = require("pdf-parse");
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const PDFParse = require("pdf-parse");
 
 dotenv.config({ path: ".env.local" });
 
@@ -24,9 +26,9 @@ const MODEL = process.env.MODEL || "google/gemini-3-flash-preview";
 
 // Shared Logic
 const loadData = (p: string) => JSON.parse(fs.readFileSync(p, "utf-8") || (p.endsWith(".json") ? "[]" : "{}"));
-const saveData = (p: string, data: any) => fs.writeFileSync(p, JSON.stringify(data, null, 2));
+const saveData = (p: string, data: unknown) => fs.writeFileSync(p, JSON.stringify(data, null, 2));
 
-async function safeReply(ctx: any, text: string) {
+async function safeReply(ctx: { reply: (t: string, o?: Record<string, unknown>) => Promise<unknown> }, text: string) {
     try {
         await ctx.reply(text, { parse_mode: "Markdown" });
     } catch (e) {
@@ -94,8 +96,8 @@ if (!token || token === "your_telegram_bot_token_here") {
     // 1. JOBS (AI-DRIVEN MATCHMAKING)
     bot.hears(["🔍 Find Jobs", "/jobs"], async (ctx) => {
         const chatId = ctx.chat.id.toString();
-        const freelancers = loadData(FREELANCERS_PATH);
-        const freelancer = freelancers.find((f: any) => f.telegramChatId === chatId) || freelancers[0];
+        const freelancers = loadData(FREELANCERS_PATH) as FreelancerProfile[];
+        const freelancer = freelancers.find((f) => f.telegramChatId === chatId) || freelancers[0];
         const jobs = loadData(JOBS_PATH);
 
         await ctx.sendChatAction("typing");
@@ -113,8 +115,8 @@ if (!token || token === "your_telegram_bot_token_here") {
     // 2. PROFILE (AI-DRIVEN COACH)
     bot.hears(["👤 My Profile", "/profile"], async (ctx) => {
         const chatId = ctx.chat.id.toString();
-        const freelancers = loadData(FREELANCERS_PATH);
-        const freelancer = freelancers.find((f: any) => f.telegramChatId === chatId) || freelancers[0];
+        const freelancers = loadData(FREELANCERS_PATH) as FreelancerProfile[];
+        const freelancer = freelancers.find((f) => f.telegramChatId === chatId) || freelancers[0];
 
         await ctx.sendChatAction("typing");
         const response = await ai.chat.completions.create({
@@ -148,8 +150,8 @@ if (!token || token === "your_telegram_bot_token_here") {
             const resumeText = data.text;
 
             // Fetch current user profile for context
-            let freelancers = loadData(FREELANCERS_PATH);
-            const index = freelancers.findIndex((f: any) => f.telegramChatId === chatId);
+            const freelancers = loadData(FREELANCERS_PATH) as FreelancerProfile[];
+            const index = freelancers.findIndex((f) => f.telegramChatId === chatId);
             const targetIndex = index > -1 ? index : 0;
             const currentProfile = freelancers[targetIndex];
 
@@ -218,8 +220,8 @@ if (!token || token === "your_telegram_bot_token_here") {
         if (text.startsWith("/")) return;
 
         // Fetch current user context for the AI
-        const freelancers = loadData(FREELANCERS_PATH);
-        const userProfile = freelancers.find((f: any) => f.telegramChatId === chatId) || freelancers[0];
+        const freelancers = loadData(FREELANCERS_PATH) as FreelancerProfile[];
+        const userProfile = freelancers.find((f) => f.telegramChatId === chatId) || freelancers[0];
 
         const DYNAMIC_PROMPT = `
 ${SYSTEM_PROMPT}
@@ -245,12 +247,12 @@ INSTRUCTIONS:
                 const sync = JSON.parse(jsonStr.substring(0, jsonStr.indexOf("}") + 1));
 
                 if (sync.role === "client") {
-                    let clients = loadData(CLIENTS_PATH);
+                    const clients = loadData(CLIENTS_PATH) as ClientProfile[];
                     clients[0] = { ...clients[0], ...sync.updates };
                     saveData(CLIENTS_PATH, clients);
                 } else {
-                    let freelancers = loadData(FREELANCERS_PATH);
-                    const index = freelancers.findIndex((f: any) => f.telegramChatId === chatId);
+                    const freelancers = loadData(FREELANCERS_PATH) as FreelancerProfile[];
+                    const index = freelancers.findIndex((f) => f.telegramChatId === chatId);
                     const targetIndex = index > -1 ? index : 0;
                     freelancers[targetIndex] = { ...freelancers[targetIndex], ...sync.updates };
                     saveData(FREELANCERS_PATH, freelancers);

@@ -33,7 +33,7 @@ export default function ClientJobsPage() {
             <div className="grid grid-cols-1 gap-4">
                 {jobs.length === 0 && (
                     <Card className="p-12 text-center text-gray-400">
-                        You haven't posted any projects yet.
+                        You haven&apos;t posted any projects yet.
                     </Card>
                 )}
 

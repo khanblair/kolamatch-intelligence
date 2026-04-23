@@ -3,13 +3,14 @@
 import { useState, useEffect } from "react";
 import { Card, Button, Badge, Progress } from "@/components/ui";
 import { User, Mail, CreditCard, Award, FileText, CheckCircle2, ChevronRight, Briefcase } from "lucide-react";
+import { FreelancerProfile } from "@/types";
 
 export default function FreelancerProfilePage() {
-    const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<FreelancerProfile | null>(null);
 
     useEffect(() => {
         const loadProfile = async () => {
-            const res = await fetch("/api/profile?role=freelancer&email=ivan@freelancer.com").catch(() => null);
+            const res = await fetch("/api/profile?role=freelancer&id=f2").catch(() => null);
             if (res && res.ok) {
                 const data = await res.json();
                 setProfile(data);
@@ -116,7 +117,7 @@ export default function FreelancerProfilePage() {
                                 Additional Highlights
                             </h3>
                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {Object.entries(profile.additionalInfo).map(([key, value]: [string, any]) => (
+                                {Object.entries(profile.additionalInfo).map(([key, value]: [string, unknown]) => (
                                     <div key={key} className="p-4 border border-gray-100 rounded-lg">
                                         <span className="text-[10px] font-bold text-gray-400 uppercase block mb-1">{key.replace(/([A-Z])/g, ' $1').trim()}</span>
                                         <span className="text-sm font-medium text-gray-700">{typeof value === 'object' ? JSON.stringify(value) : String(value)}</span>

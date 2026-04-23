@@ -2,10 +2,11 @@
 
 import { useState, useEffect } from "react";
 import { Card, Button, Input, Badge } from "@/components/ui";
+import { FreelancerProfile, ClientProfile } from "@/types";
 import { Building2, Mail, Briefcase, Globe, Edit3, Save } from "lucide-react";
 
 export default function ClientProfilePage() {
-    const [profile, setProfile] = useState<any>(null);
+    const [profile, setProfile] = useState<ClientProfile | null>(null);
     const [isEditing, setIsEditing] = useState(false);
 
     useEffect(() => {
