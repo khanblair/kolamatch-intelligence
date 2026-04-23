@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
-import { Beaker, Eye, EyeOff } from "lucide-react";
+import { Beaker, Eye, EyeOff, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
     const [role, setRole] = useState<"client" | "freelancer">("client");
@@ -28,7 +29,13 @@ export default function LoginPage() {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+        <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8 relative">
+            <Link href="/" className="absolute top-8 left-8">
+                <button className="flex items-center gap-2 text-sm font-bold text-gray-400 hover:text-[#35b544] transition-all bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100">
+                    <ArrowLeft className="h-4 w-4" />
+                    Back to Home
+                </button>
+            </Link>
             <div className="w-full max-w-md space-y-8 bg-white p-10 rounded-2xl shadow-xl shadow-gray-200/50 border border-gray-100">
                 <div className="flex flex-col items-center">
                     <div className="w-16 h-16 bg-[#35b544] rounded-2xl flex items-center justify-center mb-6 shadow-lg shadow-green-100">

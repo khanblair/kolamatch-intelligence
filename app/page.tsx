@@ -19,12 +19,15 @@ export default function LandingPage() {
               KolaMatch
             </span>
           </div>
-          <div className="flex items-center gap-2 md:gap-4">
-            <Link href="/login">
-              <Button variant="ghost" size="sm" className="hidden sm:inline-flex">Sign In</Button>
+          <div className="flex items-center gap-2 md:gap-4 font-bold text-sm">
+            <Link href="/admin/whatsapp" className="flex text-gray-500 hover:text-[#35b544] transition-colors px-4">
+              WhatsApp Admin
             </Link>
             <Link href="/login">
-              <Button size="sm" className="md:size-md">Get Started</Button>
+              <Button variant="ghost" size="sm" className="hidden sm:inline-flex font-bold">Sign In</Button>
+            </Link>
+            <Link href="/login">
+              <Button size="sm" className="md:size-md font-bold">Get Started</Button>
             </Link>
           </div>
         </div>

@@ -54,8 +54,88 @@ export default function FreelancerSettings() {
         }
     };
 
+    const [showWhatsAppQR, setShowWhatsAppQR] = useState(false);
+    const [qrData, setQrData] = useState<{
+        qr?: string;
+        status?: string;
+        user?: { phone: string; name: string; device: string }
+    }>({ status: "loading" });
+
+    const isConnected = ["isLogged", "synced", "chatsAvailable", "inChat"].includes(qrData.status || "");
+
+    // Poll for QR Code or Initial Status
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        const fetchStatus = async () => {
+            try {
+                const res = await fetch("/api/whatsapp/qr");
+                const data = await res.json();
+                setQrData(data);
+
+                if (showWhatsAppQR && ["isLogged", "qrReadSuccess", "synced", "inChat", "chatsAvailable"].includes(data.status)) {
+                    // Success! Close modal after a delay
+                    setTimeout(() => setShowWhatsAppQR(false), 3000);
+                }
+            } catch (e) {
+                console.error("Status Fetch Error:", e);
+            }
+        };
+
+        fetchStatus(); // Initial fetch
+        interval = setInterval(fetchStatus, 5000); // Background poll
+
+        return () => clearInterval(interval);
+    }, [showWhatsAppQR]);
+
     return (
         <div className="max-w-3xl space-y-6 md:space-y-8">
+            {/* WhatsApp QR Modal Overlay */}
+            {showWhatsAppQR && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-300">
+                    <Card className="max-w-md w-full p-8 space-y-6 shadow-2xl border-transparent">
+                        <div className="text-center space-y-2">
+                            <h2 className="text-2xl font-bold text-gray-900">Connect WhatsApp</h2>
+                            <p className="text-sm text-gray-500 font-medium">Scan this QR code with your WhatsApp app to link KolaMatch Intelligence.</p>
+                        </div>
+
+                        <div className="flex flex-col items-center justify-center p-4 bg-gray-50 rounded-2xl border border-gray-100 min-h-[300px] relative">
+                            {qrData.qr ? (
+                                <img src={qrData.qr} alt="WhatsApp QR" className="w-64 h-64 shadow-inner rounded-lg" />
+                            ) : qrData.status === "qrReadSuccess" || qrData.status === "connecting" || qrData.status === "SYNCING" ? (
+                                <div className="flex flex-col items-center gap-3">
+                                    <div className="w-16 h-16 bg-blue-50 rounded-full flex items-center justify-center text-blue-500 mb-2 animate-pulse">
+                                        <Loader2 className="h-8 w-8 animate-spin" />
+                                    </div>
+                                    <p className="text-sm font-bold text-gray-900">Connecting to WhatsApp...</p>
+                                    <p className="text-xs text-gray-400">Verifying session with your phone.</p>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col items-center gap-3">
+                                    <Loader2 className="h-10 w-10 text-[#35b544] animate-spin" />
+                                    <p className="text-xs text-gray-400 font-bold uppercase tracking-widest">Waiting for server...</p>
+                                </div>
+                            )}
+
+                            {(qrData.status === "isLogged" || qrData.status === "synced" || qrData.status === "chatsAvailable") && (
+                                <div className="absolute inset-0 bg-white/95 flex flex-col items-center justify-center rounded-2xl animate-in zoom-in duration-500">
+                                    <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center text-[#35b544] mb-6 shadow-sm">
+                                        <Check className="w-10 h-10" />
+                                    </div>
+                                    <p className="text-xl font-bold text-gray-900">WhatsApp Connected!</p>
+                                    <p className="text-gray-500 font-medium">Your number is successfully linked.</p>
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="flex justify-center pt-2">
+                            <Button variant="ghost" className="font-bold text-gray-400 hover:text-red-500" onClick={() => setShowWhatsAppQR(false)}>
+                                Cancel Connection
+                            </Button>
+                        </div>
+                    </Card>
+                </div>
+            )}
+
             <div>
                 <h1 className="text-2xl font-bold text-gray-900">Freelancer Settings</h1>
                 <p className="text-gray-500">Update your profile and AI matching preferences.</p>
@@ -77,12 +157,16 @@ export default function FreelancerSettings() {
                     <div className="p-4 bg-gray-50/50 rounded-xl border border-gray-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
                             <span className="font-bold text-gray-800">WhatsApp Match Alerts</span>
-                            <Badge className="bg-green-100 text-[#35b544] border-green-200">Instant</Badge>
+                            <Badge className={isConnected ? "bg-green-100 text-[#35b544]" : "bg-gray-100 text-gray-400"}>
+                                {isConnected ? "Active" : "Linked via Admin"}
+                            </Badge>
                         </div>
-                        <Button className="gap-2 font-bold px-6 rounded-xl bg-[#35b544] hover:bg-[#2e9e3b] w-full sm:w-auto">
-                            <MessageSquare className="h-4 w-4" />
-                            Connect WhatsApp
-                        </Button>
+                        {isConnected && qrData.user && (
+                            <div className="text-right hidden sm:block">
+                                <p className="text-xs font-bold text-gray-900">{qrData.user.name}</p>
+                                <p className="text-[10px] text-gray-400 font-medium">+{qrData.user.phone}</p>
+                            </div>
+                        )}
                     </div>
 
                     <div className="p-6 bg-gray-50/50 rounded-2xl border border-gray-100 space-y-4">

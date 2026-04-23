@@ -7,10 +7,11 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "whatsapp": "echo 'Run your WPPConnect server separately on port 3001'",
+    "whatsapp": "bun run scripts/whatsapp-server.ts",
     "telegram": "bun run scripts/telegram-server.ts"
   },
   "dependencies": {
+    "@wppconnect-team/wppconnect": "^1.35.0",
     "clsx": "^2.1.1",
     "dotenv": "^17.4.2",
     "html2canvas": "^1.4.1",
