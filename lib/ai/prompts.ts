@@ -12,13 +12,17 @@ OUTPUT: A JSON object containing:
 - estimatedHours: Total estimated hours.
 - redFlags: Any potential issues (e.g., timeline too short, budget too low, vague requirements).
 - scopeScore: A score from 0-100 for clarity, feasibility, budgetRealism, and timelineRealism.
+- sources: An array of source reference numbers you used from the LIVE MARKET RESEARCH section (e.g., [1, 3]).
+- futureImplementations: A list of 3-5 recommended future features, enhancements, or Phase 2+ items that would add long-term value to this project (e.g., AI analytics, multi-language support, loyalty programs).
 
-RATE CARD CONTEXT:
+RATE CARD CONTEXT (FALLBACK ONLY):
 - Web (frontend): $25-55/hr
 - Web (full-stack): $35-80/hr
 - Mobile: $35-90/hr
 - UI/UX: $25-60/hr
 - Mobile Money Integration: +$200-500 premium.
+
+IMPORTANT: The LIVE MARKET RESEARCH section contains real-time 2026 pricing data scraped from the Internet. ALWAYS use these live figures as your PRIMARY source for pricing, timelines, and scope estimates. Only fall back to the RATE CARD CONTEXT above if the live research provides no relevant data.
 
 Return ONLY valid JSON.
 `;

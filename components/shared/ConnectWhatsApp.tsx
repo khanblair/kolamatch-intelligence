@@ -128,7 +128,7 @@ export function ConnectWhatsApp({ role, userId, initialPhone }: ConnectWhatsAppP
                                         method: "POST",
                                         body: JSON.stringify({
                                             phone: phone,
-                                            message: "🚨 *KolaMatch Connection Test*\n\nYour WhatsApp linking is successful! You will now receive match alerts and career insights directly here. 🚀"
+                                            message: `🚨 *KolaMatch Connection Test*\n\nYour WhatsApp linking is almost complete! To securely pair this phone with Ivan Ssempijja's profile, please reply to this message with:\n\n*LINK-${userId}*`
                                         })
                                     });
                                     const data = await res.json();

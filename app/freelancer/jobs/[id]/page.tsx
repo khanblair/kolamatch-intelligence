@@ -36,11 +36,23 @@ export default function JobDetailsPage() {
             });
     }, [id]);
 
+    const stripMarkdown = (text: string) => {
+        return text
+            .replace(/\*\*(.*?)\*\*/g, "$1")
+            .replace(/\*(.*?)\*/g, "$1")
+            .replace(/^#{1,6}\s+/gm, "")
+            .replace(/^\s*[-*+]\s+/gm, "• ")
+            .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+            .replace(/`{1,3}([^`]+)`{1,3}/g, "$1")
+            .replace(/^>\s+/gm, "")
+            .trim();
+    };
+
     const handleGenerateProposal = () => {
         setGeneratingProposal(true);
-        // Simulate AI generation
         setTimeout(() => {
-            setProposal(`Dear Client,\n\nI am excited to apply for the "${job?.title}" project. With my experience in Fullstack Engineering and Financial Structuring, I am confident I can deliver high-quality results...\n\n[AI Generated Strategic Points]\n- Professional implementation of Node.js backend logic.\n- Secure integration of payment gateways.\n- Scalable architecture designed for East African infrastructure.`);
+            const rawProposal = `Dear Client,\n\nI am excited to apply for the "${job?.title}" project. With my experience in Fullstack Engineering and Financial Structuring, I am confident I can deliver high-quality results...\n\n[AI Generated Strategic Points]\n- Professional implementation of Node.js backend logic.\n- Secure integration of payment gateways.\n- Scalable architecture designed for East African infrastructure.`;
+            setProposal(stripMarkdown(rawProposal));
             setGeneratingProposal(false);
         }, 1500);
     };

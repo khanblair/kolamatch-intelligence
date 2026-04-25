@@ -19,6 +19,7 @@ const CONFIG_PATH = path.join(DATA_DIR, "config.json");
 const JOBS_PATH = path.join(DATA_DIR, "jobs.json");
 const CLIENTS_PATH = path.join(DATA_DIR, "clients.json");
 const FREELANCERS_PATH = path.join(DATA_DIR, "freelancers.json");
+const WHATSAPP_CHATS_PATH = path.join(DATA_DIR, "whatsapp_chats.json");
 
 const ai = new OpenAI({ baseURL: "https://openrouter.ai/api/v1", apiKey: process.env.OPENROUTER_API_KEY });
 const MODEL = process.env.MODEL || "google/gemini-3-flash-preview";
@@ -31,10 +32,15 @@ const SYSTEM_PROMPT = `
 You are KolaMatch Intelligence, a high-fidelity Career Agent and Profile Sync Engine.
 Your goal is to provide intelligent matchmaking and career advice on WhatsApp.
 
-MATCHMAKING RULES:
+FORMATTING RULES:
 - BE EXTREMELY CONCISE. No long paragraphs. Use emojis effectively.
+- Use *single asterisks* for bolding (e.g. *Title*). NEVER use double asterisks.
+- Do NOT use markdown headers (#, ##, ###). Use bold text for section headers instead.
+- Format lists with bullet points (•) or dashes (-).
+- Format matches like this: *[Job Title]* ([Budget]) — *Why:* [1 short sentence on fit].
+
+MATCHMAKING RULES:
 - When finding jobs, only return the Top 2-3 most relevant matches.
-- Format: *[Job Title]* ([Budget]) — *Why:* [1 short sentence on fit].
 - GUIDANCE: Conclude by asking which job interests them most and offer to help them phrase a professional outreach message.
 
 PROFILE COACH RULES:
@@ -51,7 +57,30 @@ UPDATE RULES:
 CONTEXT:
 Jobs: ${JSON.stringify(loadData(JOBS_PATH))}
 Clients: ${JSON.stringify(loadData(CLIENTS_PATH))}
+
+KNOWLEDGEBASE MAPPING:
+- Jobs in 'Jobs' array are linked to Clients in 'Clients' array via 'clientId' -> 'id'.
+- If a user asks "who owns this job" or "which client is this", look up the 'clientId' in the Jobs array and find the corresponding Client in the Clients array.
+- You are PERMITTED to share the Client Name and Industry when asked about job ownership.
 `;
+
+// Persistent Session store (Disk-based Memory)
+const userHistories: Record<string, { role: "system" | "user" | "assistant"; content: string }[]> = fs.existsSync(WHATSAPP_CHATS_PATH)
+    ? JSON.parse(fs.readFileSync(WHATSAPP_CHATS_PATH, "utf-8"))
+    : {};
+
+const MAX_HISTORY = 10;
+const saveHistory = () => saveData(WHATSAPP_CHATS_PATH, userHistories);
+
+// Helper to format text for WhatsApp markdown
+const formatForWhatsApp = (text: string) => {
+    return text
+        .replace(/\*\*\*(.*?)\*\*\*/g, "_*$1*_") // Bold + Italic
+        .replace(/\*\*(.*?)\*\*/g, "*$1*")      // **bold** to *bold*
+        .replace(/^#+ (.*$)/gm, "*$1*")         // # Headers to *Bold*
+        .replace(/`([^`]+)`/g, "```$1```")      // `code` to ```code```
+        .trim();
+};
 
 // Helper for robust JSON extraction from AI text
 const extractJson = (text: string) => {
@@ -78,7 +107,7 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
     const userPhone = from.split('@')[0];
 
     let user: FreelancerProfile | ClientProfile | undefined = (freelancers as FreelancerProfile[]).find((f) => f.phone === userPhone);
-    let role = "freelancer";
+    let role: "freelancer" | "client" | "guest" = "freelancer";
 
     if (!user) {
         user = (clients as ClientProfile[]).find((c) => c.phone === userPhone);
@@ -104,13 +133,35 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
                 model: MODEL,
                 messages: [
                     {
-                        role: "system",
+                        role: "system" as const,
                         content: `You are the KolaMatch Intelligence Full Profile Sync Engine.
-                        Intelligently merge this CV data into the Current User Profile.
-                        CURRENT PROFILE: ${JSON.stringify(user)}
-                        Return ONLY a valid JSON block for the updated profile.`
+                        Your task is to take a raw Resume Text and intelligently merge it into the Current User Profile.
+                        
+                        CURRENT USER PROFILE: ${JSON.stringify(user)}
+                        
+                        SYNC OBJECTIVE:
+                        1. EXTRACT: Find names, emails, skills, experience, seniority, a professional summary, and notable projects.
+                        2. MERGE: Intelligently combine with the Current Profile.
+                           - If a field is missing in the Current Profile but present in the CV, ADD it.
+                           - For 'skills', prioritizes high-value technical skills. Maintain a clean list (max 15).
+                           - For 'notableProjects', merge the new ones with existing ones.
+                        3. CLEAN: Ignore filler/template text.
+                        
+                        REQUIRED JSON STRUCTURE:
+                        {
+                          "name": "Full Name",
+                          "email": "Email Address",
+                          "skills": ["Skill 1", "Skill 2"],
+                          "experienceYears": 0,
+                          "seniority": "junior|mid|senior|lead",
+                          "summary": "Short professional summary",
+                          "notableProjects": ["Project A", "Project B"],
+                          "suggestedRate": "$XX-YY/hr"
+                        }
+                        
+                        Return ONLY the valid JSON block.`
                     },
-                    { role: "user", content: `RESUME TEXT:\n${resumeText}` }
+                    { role: "user" as const, content: `RESUME TEXT:\n${resumeText}` }
                 ]
             });
 
@@ -118,17 +169,12 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
             const extracted = extractJson(rawResponse);
 
             if (extracted) {
-                // Update freelancer profile
                 const index = (freelancers as FreelancerProfile[]).findIndex((f) => f.phone === userPhone);
-                if (index > -1) {
-                    freelancers[index] = { ...freelancers[index], ...extracted, phone: userPhone };
-                } else {
-                    // Create/Update based on phone if first time
-                    freelancers[0] = { ...freelancers[0], ...extracted, phone: userPhone };
-                }
+                const targetIndex = index > -1 ? index : 0;
+                freelancers[targetIndex] = { ...freelancers[targetIndex], ...extracted, phone: userPhone };
                 saveData(FREELANCERS_PATH, freelancers);
 
-                await client.sendText(from, `✅ *Profile Synced!* 🚀\n\nI've performed a full sync of your profile via WhatsApp:\n• *Key Skills:* ${extracted.skills?.slice(0, 5).join(", ")}...\n• *Seniority:* ${extracted.seniority}\n• *Experience:* ${extracted.experienceYears} Years`);
+                await client.sendText(from, `✅ *Profile Synced!* 🚀\n\nI've performed a full sync of your profile via WhatsApp:\n• *Key Skills:* ${extracted.skills?.slice(0, 5).join(", ")}...\n• *Seniority:* ${extracted.seniority}\n• *Experience:* ${extracted.experienceYears} Years \n\nYour profile has been updated and merged intelligently.`);
             }
             return;
         } catch (e) {
@@ -140,6 +186,29 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
 
     // Handle explicit commands
     const command = body.toLowerCase().trim();
+
+    // 🔗 AUTH/LINK HANDLER
+    if (command.startsWith('link-')) {
+        const targetId = command.replace('link-', '');
+        let targetUser: FreelancerProfile | ClientProfile | undefined;
+        let isFreelancer = false;
+
+        targetUser = (freelancers as FreelancerProfile[]).find(f => f.id === targetId);
+        if (targetUser) isFreelancer = true;
+        else targetUser = (clients as ClientProfile[]).find(c => c.id === targetId);
+
+        if (targetUser) {
+            targetUser.phone = userPhone;
+            if (isFreelancer) saveData(FREELANCERS_PATH, freelancers);
+            else saveData(CLIENTS_PATH, clients);
+
+            await client.sendText(from, `✅ *Account Linked Successfully!* 🚀\n\nWelcome back, *${targetUser.name}*. Your WhatsApp is now securely paired with your KolaMatch profile.`);
+            return;
+        } else {
+            await client.sendText(from, `⚠️ Sorry, I couldn't find a profile with ID: *${targetId}*. Please check your settings and try again.`);
+            return;
+        }
+    }
     if (command === '/jobs' || command === 'find jobs') {
         const response = await ai.chat.completions.create({
             model: MODEL,
@@ -148,7 +217,7 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
                 { role: "user", content: `I am ${user?.name || "unidentified"} (${role}). Based on available data, provide insights or job matches. Format with bullet points.` }
             ]
         });
-        await client.sendText(from, response.choices[0].message.content || "🔍 No job matches found.");
+        await client.sendText(from, formatForWhatsApp(response.choices[0].message.content || "🔍 No job matches found."));
         return;
     }
 
@@ -160,7 +229,7 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
                 { role: "user", content: `I am ${user?.name || "unidentified"} (${role}). Display my profile and provide role-specific AI insights.` }
             ]
         });
-        await client.sendText(from, response.choices[0].message.content || "👤 Profile loaded.");
+        await client.sendText(from, formatForWhatsApp(response.choices[0].message.content || "👤 Profile loaded."));
         return;
     }
 
@@ -173,6 +242,10 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
         await client.sendText(from, helpText);
         return;
     }
+
+    // Initialize/Get history
+    if (!userHistories[userPhone]) userHistories[userPhone] = [];
+    const history = userHistories[userPhone];
 
     // AI Conversational Logic
     if (body) {
@@ -187,9 +260,15 @@ If role is 'freelancer', focus on career coaching and job matches.
 `;
 
         try {
+            const messages = [
+                { role: "system" as const, content: DYNAMIC_PROMPT },
+                ...history,
+                { role: "user" as const, content: body }
+            ];
+
             const response = await ai.chat.completions.create({
                 model: MODEL,
-                messages: [{ role: "system", content: DYNAMIC_PROMPT }, { role: "user", content: body }]
+                messages: messages
             });
 
             const reply = response.choices[0].message.content || "...";
@@ -213,13 +292,19 @@ If role is 'freelancer', focus on career coaching and job matches.
                     }
 
                     const cleanReply = parts[0].trim();
-                    await client.sendText(from, cleanReply || "✅ Profile updated and synced!");
+                    await client.sendText(from, formatForWhatsApp(cleanReply || "✅ Profile updated and synced!"));
                 } else {
-                    await client.sendText(from, reply); // Fallback to sending full reply if parse fails
+                    await client.sendText(from, formatForWhatsApp(reply)); // Fallback to sending full reply if parse fails
                 }
             } else {
-                await client.sendText(from, reply);
+                await client.sendText(from, formatForWhatsApp(reply));
             }
+
+            // Update History
+            history.push({ role: "user", content: body });
+            history.push({ role: "assistant", content: reply });
+            if (history.length > MAX_HISTORY) userHistories[userPhone] = history.slice(-MAX_HISTORY);
+            saveHistory(); // Persist to disk
         } catch (e) {
             console.error("WhatsApp AI Error:", e);
             await client.sendText(from, "⚠️ AI Sync Error.");
@@ -230,13 +315,12 @@ If role is 'freelancer', focus on career coaching and job matches.
 wppconnect
     .create({
         session: "KolaMatch-Agent",
-        mkdirFolderToken: path.join(DATA_DIR, "tokens"), // Move tokens outside project root to avoid Turbopack issues
-        autoClose: 0, // Disable auto close to allow time for QR scan
-        whatsappVersion: '2.3000.1018901844', // Correct property name
+        mkdirFolderToken: path.join(DATA_DIR, "tokens"),
+        autoClose: 0,
+        whatsappVersion: '2.3000.1018901844',
         catchQR: (base64Qrimg, asciiQR, attempts, urlCode) => {
             console.log("Terminal QR Code:");
             console.log(asciiQR);
-            // Save QR for UI display
             saveData(path.join(DATA_DIR, "whatsapp-qr.json"), {
                 qr: base64Qrimg,
                 updatedAt: new Date().toISOString(),
@@ -255,7 +339,6 @@ wppconnect
         console.log("🤖 WhatsApp Agent Starting...");
 
         try {
-            // Capture and broadcast login info
             const me = (await client.getHostDevice()) as unknown as {
                 wid?: { user: string },
                 id?: { user: string },
@@ -279,7 +362,6 @@ wppconnect
             });
         } catch (e) {
             console.error("Error fetching host device info:", e);
-            // Still update status to isLogged so the UI knows we are connected
             saveData(path.join(DATA_DIR, "whatsapp-qr.json"), {
                 status: "isLogged",
                 updatedAt: new Date().toISOString(),
@@ -293,7 +375,6 @@ wppconnect
 
         client.onMessage((message) => handleMessage(client, message));
 
-        // 🚀 EXPOSE NOTIFICATION ENDPOINT FOR SYSTEM ALERTS
         console.log("🌐 Starting Notification Bridge on port 3001...");
         // @ts-expect-error - Bun is available at runtime
         Bun.serve({

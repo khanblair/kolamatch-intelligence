@@ -58,6 +58,9 @@ export interface JobPost {
     budget?: string;
     matchScore?: number;
     skills?: string[];
+    sources?: { title: string; url: string }[];
+    topMatches?: { id: string; name: string; matchReason: string; matchScore: number; skills: string[]; seniority: string; experienceYears: number; suggestedRate: string; notableProjects: string[] }[];
+    futureImplementations?: string[];
 }
 
 export interface MatchingResult {
