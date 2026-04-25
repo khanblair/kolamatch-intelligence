@@ -23,12 +23,34 @@
     {
       "role": "assistant",
       "content": "I will reach out to both *Kezia Namugga* and *Ivan Ssempijja* on your behalf to gauge their interest in the *Mobile Logistics App* project. 🤝\n\nI'll let them know *Kola Logistics Ltd* is interested in their expertise.\n\nNOTIFY_FREELANCER: { \"clientId\": \"c1\", \"freelancerId\": \"f1\", \"message\": \"Kola Logistics Ltd is interested in your profile for their Mobile Logistics App (Uber for Trucks) project. Are you available to discuss?\" }\n\nNOTIFY_FREELANCER: { \"clientId\": \"c1\", \"freelancerId\": \"f2\", \"message\": \"Kola Logistics Ltd has selected you as a top match for their Mobile Logistics App project. Would you like to see the full brief?\" }\n\nI will notify you as soon as they respond! 🔔 Is there any specific detail you'd like me to emphasize to them?"
+    },
+    {
+      "role": "user",
+      "content": "yes, its great. accept it"
+    },
+    {
+      "role": "assistant",
+      "content": "Acknowledged! I have confirmed your interest and initiated the connection. 🚀\n\nI've sent formal invitations to both *Kezia Namugga* and *Ivan Ssempijja* highlighting that *Kola Logistics Ltd* has accepted them as top candidates for the *Mobile Logistics App* project.\n\nNOTIFY_FREELANCER: { \"clientId\": \"c1\", \"freelancerId\": \"f1\", \"message\": \"Excellent news! Kola Logistics Ltd has officially accepted your match for the Mobile Logistics App project. They are ready to move forward. Please share your availability for an initial call.\" }\n\nNOTIFY_FREELANCER: { \"clientId\": \"c1\", \"freelancerId\": \"f2\", \"message\": \"Great news! Kola Logistics Ltd has accepted your profile for the Mobile Logistics App project. They are eager to discuss next steps. Please let us know when you are free to talk.\" }\n\nI'll alert you here the moment they reply. 🔔 Anything else you need for now?"
     }
   ],
   "256789359169": [
     {
       "role": "assistant",
       "content": "🚀 *New Strategic Proposal!*\n\n*Ivan Ssempijja* has submitted a proposal for your project: *WhatsApp-Style Messaging MVP with Mobile Money Integration*.\n\n*Proposal Summary:* \nDear KolaMatch Test Client,\n\nAs a Senior Developer with deep expertise in full-stack architecture and financial structuring, I specialize in building high-performance, scalable messaging ecosystems integrated with fintech protocols. My background ensures your MVP isn't just a chat tool, but a secure...\n\n*Action Required:* Would you like to accept this proposal, reject it, or ask the freelancer a follow-up question? Reply directly to this message and I will notify them!"
+    },
+    {
+      "role": "assistant",
+      "content": "🚀 *New Strategic Proposal!*\n\n*Ivan Ssempijja* has submitted a proposal for your project: *WhatsApp-Style Messaging MVP with Mobile Money Integration*.\n\n*Proposal Summary:* \nhi am Ivan and this is a proposal for your job, i am good at works\n\n*Action Required:* Would you like to accept this proposal, reject it, or ask the freelancer a follow-up question? Reply directly to this message and I will notify them!"
+    }
+  ],
+  "87720428863490": [
+    {
+      "role": "user",
+      "content": "let’s talk now"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! I am ready to assist you. 🤝\n\nAs we are currently in *Guest* mode, I don't have your full profile or contact history yet. To enjoy seamless matchmaking and bridging on WhatsApp, please:\n\n• Go to your *KolaMatch Settings*.\n• Link your *WhatsApp* account.\n\nOnce linked, I can:\n- 🚀 Connect you with top tech talent or clients.\n- 📩 Bridge your conversations automatically.\n- 💼 Manage your project bids and profiles.\n\nWhat can I help you with first?"
     }
   ]
 }

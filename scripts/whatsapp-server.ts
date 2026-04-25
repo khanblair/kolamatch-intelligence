@@ -28,6 +28,14 @@ const MODEL = process.env.MODEL || "google/gemini-3-flash-preview";
 const loadData = (p: string) => JSON.parse(fs.readFileSync(p, "utf-8") || (p.endsWith(".json") ? "[]" : "{}"));
 const saveData = (p: string, data: unknown) => fs.writeFileSync(p, JSON.stringify(data, null, 2));
 
+// Helper for robust phone number cleaning (strips suffixes like :1 or .0:1)
+const getCleanPhone = (from: string) => {
+    const raw = from.split('@')[0];
+    // Keep only the numeric part from the start
+    const clean = raw.split(':')[0].split('.')[0].replace(/\D/g, "");
+    return clean;
+};
+
 const SYSTEM_PROMPT = `
 You are KolaMatch Intelligence, a high-fidelity AI Broker and Career Agent.
 Your goal is to provide intelligent matchmaking and seamlessly bridge communication between freelancers and clients on WhatsApp.
@@ -65,14 +73,20 @@ KNOWLEDGEBASE MAPPING:
 `;
 
 // Persistent Session store (Disk-based Memory)
-const userHistories: Record<string, { role: "system" | "user" | "assistant"; content: string }[]> = fs.existsSync(WHATSAPP_CHATS_PATH)
+const rawHistories = fs.existsSync(WHATSAPP_CHATS_PATH)
     ? JSON.parse(fs.readFileSync(WHATSAPP_CHATS_PATH, "utf-8"))
     : {};
+
+// Sanitize keys on startup
+const userHistories: Record<string, { role: "system" | "user" | "assistant"; content: string }[]> = {};
+for (const [key, val] of Object.entries(rawHistories)) {
+    userHistories[getCleanPhone(key)] = val as any;
+}
 
 const MAX_HISTORY = 10;
 const saveHistory = () => saveData(WHATSAPP_CHATS_PATH, userHistories);
 
-// Helper to format text for WhatsApp markdown
+// Helper to load and save data for WhatsApp markdown
 const formatForWhatsApp = (text: string) => {
     return text
         .replace(/\*\*\*(.*?)\*\*\*/g, "_*$1*_") // Bold + Italic
@@ -121,13 +135,13 @@ async function handleMessage(client: wppconnect.Whatsapp, message: wppconnect.Me
     // Fetch user context (Check both freelancers and clients)
     const freelancers = loadData(FREELANCERS_PATH);
     const clients = loadData(CLIENTS_PATH);
-    const userPhone = from.split('@')[0];
+    const userPhone = getCleanPhone(from);
 
-    let user: FreelancerProfile | ClientProfile | undefined = (freelancers as FreelancerProfile[]).find((f) => f.phone === userPhone);
+    let user: FreelancerProfile | ClientProfile | undefined = (freelancers as FreelancerProfile[]).find((f) => getCleanPhone(f.phone || "") === userPhone);
     let role: "freelancer" | "client" | "guest" = "freelancer";
 
     if (!user) {
-        user = (clients as ClientProfile[]).find((c) => c.phone === userPhone);
+        user = (clients as ClientProfile[]).find((c) => getCleanPhone(c.phone || "") === userPhone);
         role = "client";
     }
 
@@ -302,7 +316,8 @@ CRITICAL DIRECTIVES FOR THIS TURN:
                         const clientsData = loadData(CLIENTS_PATH);
                         const targetClient = clientsData.find((c: any) => c.id === notification.clientId);
                         if (targetClient && targetClient.phone) {
-                            await client.sendText(`${targetClient.phone}@c.us`, notification.message);
+                            const cleanTarget = getCleanPhone(targetClient.phone);
+                            await client.sendText(`${cleanTarget}@c.us`, notification.message);
                             console.log(`📡 [AI Broker] Forwarded message to client ${targetClient.name}`);
                         }
                     }
@@ -317,7 +332,8 @@ CRITICAL DIRECTIVES FOR THIS TURN:
                         const freelancersData = loadData(FREELANCERS_PATH);
                         const targetFreelancer = freelancersData.find((f: any) => f.id === notification.freelancerId);
                         if (targetFreelancer && targetFreelancer.phone) {
-                            await client.sendText(`${targetFreelancer.phone}@c.us`, notification.message);
+                            const cleanTarget = getCleanPhone(targetFreelancer.phone);
+                            await client.sendText(`${cleanTarget}@c.us`, notification.message);
                             console.log(`📡 [AI Broker] Forwarded message to freelancer ${targetFreelancer.name}`);
                         }
                     }
@@ -415,15 +431,15 @@ wppconnect
                 if (url.pathname === "/send" && req.method === "POST") {
                     try {
                         const { phone, message } = await req.json();
-                        const target = phone.includes("@") ? phone : `${phone}@c.us`;
+                        const cleanPhone = getCleanPhone(phone);
+                        const target = `${cleanPhone}@c.us`;
 
                         await client.sendText(target, message);
-                        console.log(`📡 [Bridge] Message sent to ${phone}`);
+                        console.log(`📡 [Bridge] Message sent to ${cleanPhone}`);
 
                         // Sync bridge messages to AI history so it can understand replies
-                        const userPhone = phone.includes("@") ? phone.split("@")[0] : phone;
-                        if (!userHistories[userPhone]) userHistories[userPhone] = [];
-                        userHistories[userPhone].push({ role: "assistant", content: message });
+                        if (!userHistories[cleanPhone]) userHistories[cleanPhone] = [];
+                        userHistories[cleanPhone].push({ role: "assistant", content: message });
                         saveHistory();
 
                         return Response.json({ success: true });

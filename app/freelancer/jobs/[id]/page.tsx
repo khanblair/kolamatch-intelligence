@@ -29,6 +29,7 @@ export default function JobDetailsPage() {
     const [client, setClient] = useState<any | null>(null);
     const [generatingProposal, setGeneratingProposal] = useState(false);
     const [proposal, setProposal] = useState("");
+    const [isDrafting, setIsDrafting] = useState(false);
     const [showChannelSelector, setShowChannelSelector] = useState(false);
     const [submitting, setSubmitting] = useState(false);
 
@@ -251,24 +252,34 @@ export default function JobDetailsPage() {
                                 {generatingProposal ? <Clock className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                                 {proposal ? "Refine Draft" : "Gen AI Proposal"}
                             </Button>
-                            <Button variant="outline" className="w-full h-12 gap-3 font-black text-xs border-gray-200 text-gray-500 uppercase tracking-widest">
+                            <Button
+                                variant="outline"
+                                className="w-full h-12 gap-3 font-black text-xs border-gray-200 text-gray-500 uppercase tracking-widest hover:border-gray-300"
+                                onClick={() => setIsDrafting(true)}
+                            >
                                 <Send className="w-4 h-4" />
                                 Manual apply
                             </Button>
                         </div>
 
-                        {proposal && (
+                        {(isDrafting || proposal) && (
                             <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500">
                                 <div className="pt-4 border-t border-gray-50">
-                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">AI Context-Aware Proposal</label>
+                                    <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest mb-3">
+                                        {proposal && !isDrafting ? "AI Context-Aware Proposal" : "Strategic Proposal Draft"}
+                                    </label>
                                     <textarea
                                         className="w-full h-64 bg-gray-50/50 border border-gray-100 rounded-2xl p-4 text-xs text-gray-700 font-semibold outline-none focus:ring-2 focus:ring-[#35b544]/10 transition-all leading-relaxed"
                                         value={proposal}
-                                        onChange={(e) => setProposal(e.target.value)}
+                                        onChange={(e) => {
+                                            setProposal(e.target.value);
+                                        }}
+                                        placeholder="Outline your strategic approach, execution plan, and relevant experience..."
                                     />
                                     <Button
-                                        className="w-full h-12 mt-4 bg-gray-900 hover:bg-black font-black text-xs uppercase tracking-widest gap-3"
+                                        className="w-full h-12 mt-4 bg-gray-900 hover:bg-black font-black text-xs uppercase tracking-widest gap-3 disabled:opacity-50"
                                         onClick={() => setShowChannelSelector(true)}
+                                        disabled={!proposal.trim()}
                                     >
                                         Submit Application
                                     </Button>
