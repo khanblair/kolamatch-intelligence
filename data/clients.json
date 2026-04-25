@@ -5,7 +5,8 @@
         "industry": "Transport & Logistics",
         "description": "Providing smart logistics solutions for East African startups.",
         "contactPerson": "Jane Doe",
-        "email": "jane@kolalogistics.com"
+        "email": "jane@kolalogistics.com",
+        "phone": "187265506644091"
     },
     {
         "id": "c2",
@@ -14,5 +15,14 @@
         "description": "Leading digital payments provider in Uganda.",
         "contactPerson": "Robert S.",
         "email": "robert@keziafintech.ug"
+    },
+    {
+        "id": "c3",
+        "name": "KolaMatch Test Client",
+        "industry": "Software Development",
+        "description": "General test account for Kolaborate platform.",
+        "contactPerson": "Test User",
+        "email": "client@kolaborate.com",
+        "phone": "256789359169"
     }
 ]

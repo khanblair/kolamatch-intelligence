@@ -1,26 +1,327 @@
 [
-    {
-        "id": "job_1",
-        "title": "Mobile Logistics App (Uber for Trucks)",
-        "summary": "Building a cross-platform application for fleet management and logistics tracking in East Africa.",
-        "description": "A cross-platform app for tracking logistics and fleet management in East Africa. Needs Mobile Money integration.",
-        "budget": "$1,500 - $3,000",
-        "suggestedRateRange": "$35-50/hr",
-        "estimatedHours": 80,
-        "clientId": "c1",
-        "status": "active",
-        "postedAt": "2026-04-22T10:00:00Z"
+  {
+    "id": "job_1",
+    "title": "Mobile Logistics App (Uber for Trucks)",
+    "summary": "Building a cross-platform application for fleet management and logistics tracking in East Africa.",
+    "description": "A cross-platform app for tracking logistics and fleet management in East Africa. Needs Mobile Money integration.",
+    "budget": "$1,500 - $3,000",
+    "suggestedRateRange": "$35-50/hr",
+    "estimatedHours": 80,
+    "clientId": "c1",
+    "status": "active",
+    "postedAt": "2026-04-22T10:00:00Z"
+  },
+  {
+    "id": "job_2",
+    "title": "E-commerce UI/UX Refactor",
+    "summary": "A design-focused project to overhaul the checkout flow for a major Ugandan fintech application.",
+    "description": "Looking for a designer to overhaul the checkout flow of a major Ugandan fintech app.",
+    "budget": "$800 - $1,200",
+    "suggestedRateRange": "$25-45/hr",
+    "estimatedHours": 35,
+    "clientId": "c2",
+    "status": "active",
+    "postedAt": "2026-04-21T15:00:00Z"
+  },
+  {
+    "title": "Full-Stack B2B/B2C Multi-Vendor Marketplace Platform (MVP)",
+    "summary": "Development of a comprehensive e-commerce ecosystem similar to Alibaba and Jumia, featuring a multi-vendor storefront, vendor dashboard, and integrated logistics management. The platform will support scalable cross-platform mobile access and robust backend operations tailored for high-volume transactions.",
+    "deliverables": [
+      "Cross-platform Mobile Application (iOS & Android) for Customers",
+      "Web-based Vendor Management Portal",
+      "Admin Content Management System (CMS) & Analytics Dashboard",
+      "Product Catalog with Advanced Search and Filtering",
+      "Integrated Multi-Channel Payment Gateway (Mobile Money & Cards)",
+      "Order Tracking and Logistics API Integration",
+      "Real-time In-app Chat for Buyers and Sellers"
+    ],
+    "phases": [
+      {
+        "name": "Phase 1: Discovery, UI/UX Design & Architecture",
+        "duration": "4-6 weeks",
+        "deliverables": [
+          "High-fidelity Wireframes",
+          "Interactive Prototypes",
+          "System Architecture Design",
+          "Database Schema"
+        ]
+      },
+      {
+        "name": "Phase 2: MVP Backend & Core Features Development",
+        "duration": "10-12 weeks",
+        "deliverables": [
+          "User Authentication",
+          "Vendor Catalog Management",
+          "Shopping Cart & Checkout Logic",
+          "Payment Gateway Integration"
+        ]
+      },
+      {
+        "name": "Phase 3: Native/Cross-platform App Development",
+        "duration": "8-10 weeks",
+        "deliverables": [
+          "Mobile App Alpha Version",
+          "Real-time Notifications",
+          "Order Tracking Module"
+        ]
+      },
+      {
+        "name": "Phase 4: Testing, Deployment & Optimization",
+        "duration": "4 weeks",
+        "deliverables": [
+          "UAT Report",
+          "App Store/Play Store Submission",
+          "Cloud Infrastructure Setup (AWS/Azure)"
+        ]
+      }
+    ],
+    "suggestedRateRange": "$25,000 - $45,000 (Fixed Price MVP) or $45 - $90/hr",
+    "estimatedHours": 1200,
+    "redFlags": [
+      "High complexity: Building 'like Alibaba' involves complex supply chain logic that often exceeds MVP scopes.",
+      "Budget sensitivity: $25k is the absolute entry-point; enterprise features will require significantly more capital.",
+      "Logistics complexity: Real-time tracking across diverse African regions requires localized third-party API support."
+    ],
+    "scopeScore": {
+      "clarity": 65,
+      "feasibility": 75,
+      "budgetRealism": 80,
+      "timelineRealism": 70
     },
-    {
-        "id": "job_2",
-        "title": "E-commerce UI/UX Refactor",
-        "summary": "A design-focused project to overhaul the checkout flow for a major Ugandan fintech application.",
-        "description": "Looking for a designer to overhaul the checkout flow of a major Ugandan fintech app.",
-        "budget": "$800 - $1,200",
-        "suggestedRateRange": "$25-45/hr",
-        "estimatedHours": 35,
-        "clientId": "c2",
-        "status": "active",
-        "postedAt": "2026-04-21T15:00:00Z"
-    }
+    "sources": [
+      {
+        "title": "eCommerce App Development Cost in 2026 | ManekTech",
+        "url": "https://www.manektech.com/blog/ecommerce-app-development-cost"
+      },
+      {
+        "title": "App Development Cost 2026 | Complete Pricing Guide - Appinventiv",
+        "url": "https://appinventiv.com/guide/mobile-app-development-cost/"
+      },
+      {
+        "title": "E-commerce App Development Cost in 2026: Complete Guide",
+        "url": "https://adevs.com/blog/ecommerce-app-development-cost/"
+      },
+      {
+        "title": "Development Timeline Estimator - How Long to Build an App? | NxCode",
+        "url": "https://www.nxcode.io/tools/dev-timeline-estimator"
+      },
+      {
+        "title": "Cost to Develop an App Like Alibaba: A Complete Guide - IT Infonity",
+        "url": "https://itinfonity.com/how-to-develop-an-app-like-alibaba-knows-development-cost/"
+      },
+      {
+        "title": "How To Build An eCommerce App Like Alibaba | Hyperlink InfoSystem",
+        "url": "https://www.hyperlinkinfosystem.com/blog/core-features-cost-estimate-to-build-an-ecommerce-app-like-alibaba"
+      },
+      {
+        "title": "How Much Does It Cost To Develop An App Like Alibaba?",
+        "url": "https://richestsoft.com/blog/cost-to-develop-an-app-like-alibaba/"
+      },
+      {
+        "title": "Cost to Develop an App Like Alibaba in 2025, Complete Guide - JR Digital Media",
+        "url": "https://jandr.info/cost-to-develop-an-app-like-alibaba"
+      },
+      {
+        "title": "How Much Does It Cost to Build an App Like Jumia?",
+        "url": "https://infinmobile.com/how-much-does-it-cost-to-build-an-app-like-jumia/"
+      }
+    ],
+    "futureImplementations": [
+      "AI-Powered Personalized Product Recommendations",
+      "Automated Inventory Forecasting for Vendors",
+      "Expansion into Multi-currency and Cross-border Trade Compliance",
+      "Loyalty and Reward Points Program",
+      "AI Chatbot for 24/7 Automated Customer Support"
+    ],
+    "topMatches": [
+      {
+        "id": "f2",
+        "name": "Ivan Ssempijja",
+        "skills": [
+          "Next.js",
+          "Node.js",
+          "PostgreSQL",
+          "negotiation",
+          "financial structuring",
+          "team coordination",
+          "market research",
+          "project management"
+        ],
+        "seniority": "Senior",
+        "experienceYears": 7,
+        "suggestedRate": "$55-80/hr",
+        "notableProjects": [
+          "E-Commerce Backend",
+          "HealthTrack Dashboard"
+        ],
+        "matchReason": "Expertise in marketplace backend architecture and financial structuring is critical for a high-scale Alibaba-style platform. His senior experience in e-commerce backends ensures a scalable foundation.",
+        "matchScore": 95
+      },
+      {
+        "id": "f1",
+        "name": "Kezia Namugga",
+        "skills": [
+          "React Native",
+          "TypeScript",
+          "Mobile Money API"
+        ],
+        "seniority": "mid",
+        "experienceYears": 4,
+        "suggestedRate": "$35-50/hr",
+        "notableProjects": [
+          "SafeRide App",
+          "KolaPay Widget"
+        ],
+        "matchReason": "Essential for the mobile frontend and localized payment integrations (Mobile Money), which is a core requirement for a Jumia-style app in the African market.",
+        "matchScore": 88
+      }
+    ],
+    "status": "draft",
+    "clientId": "c3",
+    "rawInput": "i want to build an app like jumia or alibaba",
+    "id": "249qx5d",
+    "createdAt": "2026-04-25T06:32:41.006Z"
+  },
+  {
+    "title": "WhatsApp-Style Messaging MVP with Mobile Money Integration",
+    "summary": "Development of a cross-platform mobile messaging application tailored for the Ugandan market. The app will feature real-time chat, media sharing, and local-first performance optimizations for low-bandwidth environments.",
+    "deliverables": [
+      "Cross-platform mobile app (Android and iOS) using React Native or Flutter",
+      "Real-time chat functionality (text, images, and voice notes)",
+      "Contact synchronization using local phone numbers",
+      "Admin dashboard for user management",
+      "Integration documentation for future Mobile Money features"
+    ],
+    "phases": [
+      {
+        "name": "UI/UX Design & Architecture",
+        "duration": "2 weeks",
+        "deliverables": [
+          "High-fidelity wireframes",
+          "Technical architecture document"
+        ]
+      },
+      {
+        "name": "Core Messaging Engine",
+        "duration": "4 weeks",
+        "deliverables": [
+          "Real-time chat implementation",
+          "Push notification system",
+          "Media upload functionality"
+        ]
+      },
+      {
+        "name": "Testing & Deployment",
+        "duration": "2 weeks",
+        "deliverables": [
+          "Beta APK for testing",
+          "Production deployment on Play Store/App Store"
+        ]
+      }
+    ],
+    "suggestedRateRange": "$500 - $850",
+    "estimatedHours": 120,
+    "redFlags": [
+      "Client budget ($400-$500) is at the extreme low end for a full custom app; standard market rates in Uganda for similar software range from UGX 2M to 5M ($540 - $1,350).",
+      "Timeline for a high-quality clone may exceed basic expectations.",
+      "Hosting and API costs (e.g., Twilio for OTP) are likely not factored into the initial budget."
+    ],
+    "scopeScore": 65,
+    "sources": [
+      {
+        "title": "How Much Does Custom Software Cost in Uganda in 2026?",
+        "url": "https://www.beelio.tech/blog/custom-software-cost-uganda-2026"
+      },
+      {
+        "title": "How to Price Your Gig in Uganda: A Freelancer Pricing ...",
+        "url": "https://www.progigfinder.com/blog/how-to-price-your-gig-in-uganda-a-freelancer-pricing-guide-for-2026"
+      },
+      {
+        "title": "Hire the Best App Development Freelancers in Uganda",
+        "url": "https://www.upwork.com/hire/app-development-freelancers/ug/"
+      },
+      {
+        "title": "Quick Quotes Uganda | Kampala - Facebook",
+        "url": "https://www.facebook.com/quickquotesuganda/?locale=id_ID"
+      },
+      {
+        "title": "Quick Quotes Uganda (@QuickQuotesUg) / Posts and Replies / X",
+        "url": "https://x.com/QuickQuotesUg/with_replies"
+      },
+      {
+        "title": "Business Analyst Estimation Techniques | Free Estimation Template",
+        "url": "https://www.adaptiveus.com/blog/estimation/"
+      },
+      {
+        "title": "WhatsApp Business for Uganda SMEs: The Complete Setup Guide (2026)",
+        "url": "https://www.leadwithvantage.com/blog/whatsapp-business-uganda-smes/"
+      },
+      {
+        "title": "Top 7 Affordable Digital Marketing Tools for Ugandan SMEs",
+        "url": "https://afilimart.com/top-7-affordable-digital-marketing-tools-for-ugandan-smes-in-2025/?srsltid=AfmBOoqjtJalH-JL4eEPd0ctXls_fmmZxbfTF8tF8g_BGqbv9frrO1Ux"
+      },
+      {
+        "title": "Digital Marketing for Small Businesses in Uganda - ArmGenius",
+        "url": "https://armgenius.com/digital-marketing-for-small-businesses-in-uganda/"
+      }
+    ],
+    "topMatches": [
+      {
+        "id": "f1",
+        "name": "Kezia Namugga",
+        "skills": [
+          "React Native",
+          "TypeScript",
+          "Mobile Money API"
+        ],
+        "seniority": "mid",
+        "experienceYears": 4,
+        "suggestedRate": "$35-50/hr",
+        "notableProjects": [
+          "SafeRide App",
+          "KolaPay Widget"
+        ],
+        "matchReason": "Expertise in React Native is perfect for a cross-platform WhatsApp clone, and her experience with local fintech (Mobile Money) is vital for the region.",
+        "matchScore": 95
+      },
+      {
+        "id": "f2",
+        "name": "Ivan Ssempijja",
+        "skills": [
+          "Next.js",
+          "Node.js",
+          "PostgreSQL",
+          "negotiation",
+          "financial structuring",
+          "team coordination",
+          "market research",
+          "project management"
+        ],
+        "seniority": "Senior",
+        "experienceYears": 7,
+        "suggestedRate": "$55-80/hr",
+        "notableProjects": [
+          "E-Commerce Backend",
+          "HealthTrack Dashboard"
+        ],
+        "matchReason": "Strong backend and database skills needed for handling real-time chat data, though his rate may require budget negotiation.",
+        "matchScore": 82
+      }
+    ],
+    "status": "published",
+    "clientId": "c3",
+    "rawInput": "i need an up like whatsapp",
+    "regions": [
+      "Uganda"
+    ],
+    "budgetType": "range",
+    "budgetValue": {
+      "min": "400",
+      "max": "500"
+    },
+    "currency": "USD",
+    "id": "u78uo",
+    "createdAt": "2026-04-25T07:03:23.408Z",
+    "updatedAt": "2026-04-25T07:38:40.138Z"
+  }
 ]

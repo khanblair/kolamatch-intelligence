@@ -51,10 +51,11 @@ export interface JobPost {
     phases: ProjectPhase[];
     suggestedRateRange: string;
     estimatedHours: number;
-    redFlags: string[];
+    redFlags: string[] | string;
     scopeScore: ScopeScore;
     status: "draft" | "published" | "closed";
     createdAt: string;
+    postedAt?: string;
     budget?: string;
     matchScore?: number;
     skills?: string[];

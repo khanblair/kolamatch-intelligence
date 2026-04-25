@@ -3,17 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils/cn";
-import { LayoutDashboard, Briefcase, Settings, LogOut, User } from "lucide-react";
+import { LayoutDashboard, Briefcase, Settings, LogOut, User, FileText } from "lucide-react";
 
 const clientNav = [
     { name: "Dashboard", href: "/client/dashboard", icon: LayoutDashboard },
     { name: "My Jobs", href: "/client/jobs", icon: Briefcase },
+    { name: "Drafts", href: "/client/drafts", icon: FileText },
     { name: "Profile", href: "/client/profile", icon: User },
     { name: "Settings", href: "/client/settings", icon: Settings },
 ];
 
 const freelancerNav = [
-    { name: "Project Feed", href: "/freelancer/dashboard", icon: LayoutDashboard },
+    { name: "Jobs Feed", href: "/freelancer/dashboard", icon: LayoutDashboard },
     { name: "My Applications", href: "/freelancer/jobs", icon: Briefcase },
     { name: "Profile", href: "/freelancer/profile", icon: User },
     { name: "Settings & CV", href: "/freelancer/settings", icon: Settings },
@@ -34,7 +35,7 @@ export function Sidebar({ type, mobileOpen, onMobileClose }: { type: "client" | 
             )}
 
             <aside className={cn(
-                "fixed inset-y-0 left-0 z-50 flex w-64 flex-col border-r bg-white transition-transform duration-300 transform md:relative md:translate-x-0",
+                "fixed inset-y-0 left-0 z-30 flex w-64 flex-col border-r bg-white transition-transform duration-300 transform md:relative md:translate-x-0",
                 mobileOpen ? "translate-x-0" : "-translate-x-full"
             )}>
                 <div className="flex h-16 items-center border-b px-6">
@@ -43,7 +44,10 @@ export function Sidebar({ type, mobileOpen, onMobileClose }: { type: "client" | 
                 <nav className="flex-1 space-y-1 px-3 py-4">
                     {navItems.map((item) => {
                         const Icon = item.icon;
-                        const isActive = pathname.startsWith(item.href);
+                        const isActive = item.href === "/freelancer/jobs"
+                            ? pathname === item.href
+                            : pathname.startsWith(item.href);
+
                         return (
                             <Link
                                 key={item.href}

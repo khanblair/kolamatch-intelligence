@@ -1,0 +1,34 @@
+{
+  "187265506644091": [
+    {
+      "role": "user",
+      "content": "i accept"
+    },
+    {
+      "role": "assistant",
+      "content": "Great! We are ready to move forward. 🚀\n\nAs *Kola Logistics Ltd*, you currently have 1 active job posting:\n*Mobile Logistics App (Uber for Trucks)* ($1,500 - $3,000).\n\n*Next Steps:*\n• Would you like me to find the top freelancers for this role?\n• Do you want to post a new job or update your existing one?\n\nWhich would you like to do first?"
+    },
+    {
+      "role": "user",
+      "content": "yes, its okay"
+    },
+    {
+      "role": "assistant",
+      "content": "Excellent. Let me find the best talent for your *Mobile Logistics App* project. 🚛\n\nBased on the technical requirements (Mobile, Logistics, Mobile Money), here are the top matches:\n\n• *Kezia Namugga* ($35-50/hr) — *Why:* Specialized in React Native and Mobile Money APIs; built the SafeRide logistics app.\n• *Ivan Ssempijja* ($55-80/hr) — *Why:* Senior expert for complex backends and high-scale logistics architecture.\n\nWhich of these profiles would you like to review in detail, or should I draft an outreach message to one of them for you? 📩"
+    },
+    {
+      "role": "user",
+      "content": "yes, its alright"
+    },
+    {
+      "role": "assistant",
+      "content": "I will reach out to both *Kezia Namugga* and *Ivan Ssempijja* on your behalf to gauge their interest in the *Mobile Logistics App* project. 🤝\n\nI'll let them know *Kola Logistics Ltd* is interested in their expertise.\n\nNOTIFY_FREELANCER: { \"clientId\": \"c1\", \"freelancerId\": \"f1\", \"message\": \"Kola Logistics Ltd is interested in your profile for their Mobile Logistics App (Uber for Trucks) project. Are you available to discuss?\" }\n\nNOTIFY_FREELANCER: { \"clientId\": \"c1\", \"freelancerId\": \"f2\", \"message\": \"Kola Logistics Ltd has selected you as a top match for their Mobile Logistics App project. Would you like to see the full brief?\" }\n\nI will notify you as soon as they respond! 🔔 Is there any specific detail you'd like me to emphasize to them?"
+    }
+  ],
+  "256789359169": [
+    {
+      "role": "assistant",
+      "content": "🚀 *New Strategic Proposal!*\n\n*Ivan Ssempijja* has submitted a proposal for your project: *WhatsApp-Style Messaging MVP with Mobile Money Integration*.\n\n*Proposal Summary:* \nDear KolaMatch Test Client,\n\nAs a Senior Developer with deep expertise in full-stack architecture and financial structuring, I specialize in building high-performance, scalable messaging ecosystems integrated with fintech protocols. My background ensures your MVP isn't just a chat tool, but a secure...\n\n*Action Required:* Would you like to accept this proposal, reject it, or ask the freelancer a follow-up question? Reply directly to this message and I will notify them!"
+    }
+  ]
+}

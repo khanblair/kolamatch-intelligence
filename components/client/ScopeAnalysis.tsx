@@ -1,12 +1,37 @@
 "use client";
 
 import { useState } from "react";
-import { CheckCircle2, AlertCircle, X, Star, Briefcase, DollarSign, Award, Lightbulb } from "lucide-react";
+import { CheckCircle2, AlertCircle, X, Star, Briefcase, DollarSign, Award, Lightbulb, Save, Loader2 } from "lucide-react";
 import { Card, Badge, Button } from "@/components/ui";
 import { JobPost } from "@/types";
 
-export function ScopeAnalysis({ result }: { result: Partial<JobPost> }) {
+export function ScopeAnalysis({ result, onSaveDraft }: { result: Partial<JobPost>, onSaveDraft?: () => Promise<void> }) {
     const [selectedFreelancer, setSelectedFreelancer] = useState<typeof result.topMatches extends (infer T)[] ? T : null>(null);
+    const [saving, setSaving] = useState(false);
+    const [saved, setSaved] = useState(false);
+
+    const renderPrice = (price: any) => {
+        if (typeof price === 'string') return price;
+        if (typeof price === 'object' && price !== null) {
+            if (price.hourly) return `${price.hourly} (${price.estimatedTotal || ''})`;
+            return JSON.stringify(price);
+        }
+        return price;
+    };
+
+    const handleSave = async () => {
+        if (!onSaveDraft) return;
+        setSaving(true);
+        try {
+            await onSaveDraft();
+            setSaved(true);
+            setTimeout(() => setSaved(false), 3000);
+        } catch (e) {
+            console.error(e);
+        } finally {
+            setSaving(false);
+        }
+    };
 
     return (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
@@ -77,7 +102,7 @@ export function ScopeAnalysis({ result }: { result: Partial<JobPost> }) {
                                     </div>
                                     <div className="flex items-center justify-between mb-2">
                                         <span className="text-xs font-bold text-[#35b544]">{match.matchScore}% Match</span>
-                                        <span className="text-xs text-gray-500">{match.suggestedRate}</span>
+                                        <span className="text-xs text-gray-500">{renderPrice(match.suggestedRate)}</span>
                                     </div>
                                     <p className="text-xs text-gray-600 leading-relaxed line-clamp-2">{match.matchReason}</p>
                                     <div className="mt-3 pt-3 border-t border-gray-50 flex items-center justify-between">
@@ -95,25 +120,40 @@ export function ScopeAnalysis({ result }: { result: Partial<JobPost> }) {
                 <Card className="p-6">
                     <h3 className="font-semibold text-gray-900 mb-4">Market Estimate</h3>
                     <div className="text-3xl font-bold text-[#35b544] mb-1">
-                        {result.suggestedRateRange}
+                        {renderPrice(result.suggestedRateRange)}
                     </div>
                     <p className="text-sm text-gray-500 mb-6">Est. {result.estimatedHours} total hours</p>
 
-                    <Button className="w-full">
-                        Finalize & Notify Freelancers
-                    </Button>
+                    <div className="space-y-3">
+                        <Button className="w-full">
+                            Finalize & Notify Freelancers
+                        </Button>
+                        <Button
+                            variant="outline"
+                            className="w-full font-bold text-[#35b544] border-[#35b544] hover:bg-green-50"
+                            onClick={handleSave}
+                            disabled={saving || saved || !onSaveDraft}
+                        >
+                            {saving ? <Loader2 className="animate-spin h-4 w-4 mr-2" /> : saved ? <CheckCircle2 className="h-4 w-4 mr-2" /> : <Save className="h-4 w-4 mr-2" />}
+                            {saved ? "Saved to Drafts" : "Save as Draft"}
+                        </Button>
+                    </div>
                 </Card>
 
-                {result.redFlags && result.redFlags.length > 0 && (
+                {result.redFlags && (Array.isArray(result.redFlags) ? result.redFlags.length > 0 : !!result.redFlags) && (
                     <div className="bg-amber-50 p-6 rounded-xl border border-amber-100">
                         <h3 className="font-semibold text-amber-900 mb-3 flex items-center gap-2">
                             <AlertCircle className="h-4 w-4" />
                             Red Flags
                         </h3>
                         <ul className="space-y-2">
-                            {result.redFlags.map((flag, i) => (
-                                <li key={i} className="text-xs text-amber-800 leading-relaxed">• {flag}</li>
-                            ))}
+                            {Array.isArray(result.redFlags) ? (
+                                result.redFlags.map((flag, i) => (
+                                    <li key={i} className="text-xs text-amber-800 leading-relaxed">• {flag}</li>
+                                ))
+                            ) : (
+                                <li className="text-xs text-amber-800 leading-relaxed">• {result.redFlags}</li>
+                            )}
                         </ul>
                     </div>
                 )}
@@ -189,7 +229,7 @@ export function ScopeAnalysis({ result }: { result: Partial<JobPost> }) {
                                 <DollarSign className="h-5 w-5 text-[#35b544]" />
                                 <div>
                                     <p className="text-xs text-gray-500 font-medium">Suggested Rate</p>
-                                    <p className="text-sm font-bold text-gray-900">{selectedFreelancer.suggestedRate}</p>
+                                    <p className="text-sm font-bold text-gray-900">{renderPrice(selectedFreelancer.suggestedRate)}</p>
                                 </div>
                             </div>
                         </div>

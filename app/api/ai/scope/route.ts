@@ -7,7 +7,7 @@ import path from "path";
 
 export async function POST(req: Request) {
     try {
-        const { rawInput } = await req.json();
+        const { rawInput, regions, budgetType, budgetValue, currency } = await req.json();
 
         if (!rawInput) {
             return NextResponse.json(
@@ -16,10 +16,13 @@ export async function POST(req: Request) {
             );
         }
 
+        const targetRegions = Array.isArray(regions) ? regions : (regions ? [regions] : ["Africa"]);
+        const clientBudgetStr = budgetValue ? `${budgetType === 'range' ? budgetValue.min + '-' + budgetValue.max : budgetValue} ${currency}` : "Not provided";
+
         // Fetch live market data from Tavily
         let liveResearch = { context: "", sources: [] as { title: string; url: string }[] };
         try {
-            liveResearch = await tavilyResearchForScoping(rawInput);
+            liveResearch = await tavilyResearchForScoping(rawInput, targetRegions);
         } catch (e) {
             console.warn("Tavily research failed, falling back to built-in knowledge:", e);
         }
@@ -38,7 +41,7 @@ export async function POST(req: Request) {
         }));
 
         const sourcesList = liveResearch.sources.map((s, i) => `[${i + 1}] ${s.title} - ${s.url}`).join("\n");
-        const enhancedPrompt = `${SCOPING_SYSTEM_PROMPT}\n\nLIVE MARKET RESEARCH (PRIMARY SOURCE):\n${liveResearch.context}\n\nSOURCES:\n${sourcesList}\n\nAVAILABLE FREELANCERS:\n${JSON.stringify(freelancerPool)}\n\nCRITICAL: The LIVE MARKET RESEARCH above contains real-time 2026 pricing data scraped from the Internet. You MUST use these live figures as your PRIMARY source for all pricing, budget ranges, and timeline estimates. Only use the built-in rate card as a fallback if the live research is empty. Include a "sources" array in your JSON output referencing the source numbers you used (e.g., [1, 3]). Also, select the top 3 best-matching freelancers from the AVAILABLE FREELANCERS list and include them in a "topMatches" array. Each match must include ALL original fields (id, name, skills, seniority, experienceYears, suggestedRate, notableProjects) plus matchReason and matchScore (0-100).`;
+        const enhancedPrompt = `${SCOPING_SYSTEM_PROMPT}\n\nTARGET REGIONS: ${targetRegions.join(", ")}\nCLIENT BUDGET: ${clientBudgetStr}\n\nLIVE MARKET RESEARCH (PRIMARY SOURCE):\n${liveResearch.context}\n\nSOURCES:\n${sourcesList}\n\nAVAILABLE FREELANCERS:\n${JSON.stringify(freelancerPool)}\n\nCRITICAL: The LIVE MARKET RESEARCH above contains real-time 2026 pricing data scraped from the Internet for the regions: ${targetRegions.join(", ")}. You MUST use these live figures as your PRIMARY source for all pricing, budget ranges, and timeline estimates. If research comes from higher-cost regions, adjust them for ${targetRegions[0]}. Include a "sources" array in your JSON output referencing the source numbers you used (e.g., [1, 3]). Also, select the top 3 best-matching freelancers from the AVAILABLE FREELANCERS list and include them in a "topMatches" array. Each match must include ALL original fields (id, name, skills, seniority, experienceYears, suggestedRate, notableProjects) plus matchReason and matchScore (0-100).`;
 
         const messages: Message[] = [
             { role: "system", content: enhancedPrompt },

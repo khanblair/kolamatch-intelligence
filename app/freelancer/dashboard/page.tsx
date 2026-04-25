@@ -17,9 +17,9 @@ export default function FreelancerDashboard() {
 
     return (
         <div className="space-y-6">
-            <div>
-                <h1 className="text-2xl font-bold text-gray-900">Recommended Projects</h1>
-                <p className="text-gray-500">Based on your CV and skills.</p>
+            <div className="mb-8">
+                <h1 className="text-3xl font-black text-gray-900 tracking-tight">Recommended Jobs</h1>
+                <p className="text-gray-500 font-medium">Curated elite opportunities based on your expertise.</p>
             </div>
 
             <div className="space-y-8">

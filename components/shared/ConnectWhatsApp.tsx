@@ -7,10 +7,11 @@ import { MessageSquare, Check, Loader2, ExternalLink, Smartphone } from "lucide-
 interface ConnectWhatsAppProps {
     role: "client" | "freelancer";
     userId: string;
+    userName?: string;
     initialPhone?: string;
 }
 
-export function ConnectWhatsApp({ role, userId, initialPhone }: ConnectWhatsAppProps) {
+export function ConnectWhatsApp({ role, userId, userName = "your", initialPhone }: ConnectWhatsAppProps) {
     const [phone, setPhone] = useState(initialPhone || "");
     const [isSaving, setIsSaving] = useState(false);
     const [isLinked, setIsLinked] = useState(!!initialPhone);
@@ -128,7 +129,7 @@ export function ConnectWhatsApp({ role, userId, initialPhone }: ConnectWhatsAppP
                                         method: "POST",
                                         body: JSON.stringify({
                                             phone: phone,
-                                            message: `🚨 *KolaMatch Connection Test*\n\nYour WhatsApp linking is almost complete! To securely pair this phone with Ivan Ssempijja's profile, please reply to this message with:\n\n*LINK-${userId}*`
+                                            message: `🚨 *KolaMatch Connection Test*\n\nYour WhatsApp linking is almost complete! To securely pair this phone with ${userName.endsWith('s') ? `${userName}'` : `${userName}'s`} profile, please reply to this message with:\n\n*LINK-${userId}*`
                                         })
                                     });
                                     const data = await res.json();

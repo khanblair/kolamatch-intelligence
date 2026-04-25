@@ -8,60 +8,79 @@ import { JobPost } from "@/types";
 export function JobMatchCard({ job }: { job: JobPost }) {
     return (
         <Link href={`/freelancer/jobs/${job.id}`} className="block">
-            <Card className="p-6 sm:p-7 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:border-[#35b544]/20 transition-all cursor-pointer border-gray-100 group relative overflow-hidden">
-                {/* Match Ribbon */}
-                <div className="absolute top-0 right-0">
-                    <div className="bg-[#35b544]/5 text-[#35b544] px-4 py-1.5 rounded-bl-2xl font-black text-[10px] uppercase tracking-wider flex items-center gap-1.5 border-l border-b border-[#35b544]/10">
-                        <span className="w-1.5 h-1.5 rounded-full bg-[#35b544] animate-pulse" />
-                        {job.matchScore || 95}% Match
+            <Card className="group relative overflow-hidden border-gray-100 bg-white p-7 transition-all hover:border-[#35b544]/30 hover:shadow-[0_20px_50px_rgba(53,181,68,0.06)] shadow-sm">
+                {/* Match Score Badge */}
+                <div className="absolute right-6 top-6">
+                    <div className="flex items-center gap-1.5 rounded-lg bg-[#35b544]/5 px-3 py-1.5 border border-[#35b544]/10">
+                        <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#35b544]" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[#35b544]">
+                            {job.matchScore || 95}% Match
+                        </span>
                     </div>
                 </div>
 
-                <div className="flex flex-col gap-5">
-                    {/* Header Section */}
-                    <div className="space-y-3 pr-20">
-                        <h3 className="font-bold text-xl text-gray-900 group-hover:text-[#35b544] transition-colors leading-tight">
+                <div className="space-y-6">
+                    <div className="space-y-2 pr-28">
+                        <h3 className="text-xl font-black text-gray-900 group-hover:text-[#35b544] transition-colors tracking-tight leading-tight">
                             {job.title}
                         </h3>
-                        
-                        <div className="flex flex-wrap items-center gap-3 text-sm text-gray-500">
-                            <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
-                                <DollarSign className="h-3.5 w-3.5 text-gray-400" />
-                                <span className="font-semibold text-gray-700">{job.budget || job.suggestedRateRange || "$1,500 - $3,000"}</span>
+                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                            {job.clientId === "c3" ? "KolaMatch Test Client" : "Verified Client"} • Posted {new Date(job.postedAt || Date.now()).toLocaleDateString()}
+                        </p>
+                    </div>
+
+                    <p className="max-w-2xl text-sm font-medium leading-relaxed text-gray-500 line-clamp-2">
+                        {job.summary}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-6 pt-2">
+                        <div className="flex items-center gap-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-[#35b544]">
+                                <DollarSign className="h-4 w-4" />
                             </div>
-                            <div className="flex items-center gap-1.5 bg-gray-50 px-3 py-1 rounded-full border border-gray-100">
-                                <Clock className="h-3.5 w-3.5 text-gray-400" />
-                                <span className="font-semibold text-gray-700">{job.estimatedHours || 40}h est.</span>
+                            <div className="space-y-0.5">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Budget Range</p>
+                                <p className="text-xs font-black text-gray-900">{job.suggestedRateRange || job.budget || "$35 - $55 /hr"}</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-400">
+                                <Clock className="h-4 w-4" />
+                            </div>
+                            <div className="space-y-0.5">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Est. Effort</p>
+                                <p className="text-xs font-black text-gray-900">{job.estimatedHours || 40} Hours</p>
+                            </div>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gray-50 text-gray-400">
+                                <Briefcase className="h-4 w-4" />
+                            </div>
+                            <div className="space-y-0.5">
+                                <p className="text-[9px] font-black uppercase tracking-widest text-gray-400">Seniority</p>
+                                <p className="text-xs font-black text-gray-900">Senior Level</p>
                             </div>
                         </div>
                     </div>
 
-                    {/* Description Section */}
-                    <p className="text-gray-600 text-sm leading-relaxed line-clamp-2 max-w-3xl">
-                        {job.summary}
-                    </p>
-
-                    {/* Footer Section */}
-                    <div className="pt-5 border-t border-gray-50 flex flex-wrap justify-between items-center gap-4">
+                    <div className="flex items-center justify-between border-t border-gray-50 pt-6">
                         <div className="flex flex-wrap gap-2">
-                            {job.skills?.slice(0, 4).map(skill => (
-                                <Badge key={skill} variant="secondary" className="text-[10px] font-bold py-1 px-3 border-transparent bg-gray-50 text-gray-500 rounded-lg">
+                            {job.skills?.slice(0, 3).map(skill => (
+                                <Badge key={skill} variant="outline" className="border-gray-100 bg-gray-50/50 px-2.5 py-1 text-[10px] font-bold text-gray-500 rounded-md">
                                     {skill}
                                 </Badge>
-                            )) || (
-                                ["React", "TypeScript", "Node.js"].map(skill => (
-                                    <Badge key={skill} variant="secondary" className="text-[10px] font-bold py-1 px-3 border-transparent bg-gray-50 text-gray-500 rounded-lg">
-                                        {skill}
-                                    </Badge>
-                                ))
-                            )}
+                            )) || ["React", "Node.js"].map(skill => (
+                                <Badge key={skill} variant="outline" className="border-gray-100 bg-gray-50/50 px-2.5 py-1 text-[10px] font-bold text-gray-500 rounded-md">
+                                    {skill}
+                                </Badge>
+                            ))}
                         </div>
-                        
-                        <div className="flex items-center gap-2 text-[#35b544] font-bold text-sm group-hover:gap-3 transition-all">
-                            <span>View Details</span>
-                            <div className="w-8 h-8 rounded-full bg-[#35b544]/5 flex items-center justify-center group-hover:bg-[#35b544] group-hover:text-white transition-all">
-                                <ChevronRight className="h-4 w-4" />
-                            </div>
+
+                        <div className="flex items-center gap-2 font-black text-sm text-[#35b544] group-hover:gap-3 transition-all">
+                            <span>Analyze Scope</span>
+                            <ChevronRight className="h-4 w-4" />
                         </div>
                     </div>
                 </div>

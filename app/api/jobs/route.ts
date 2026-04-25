@@ -14,7 +14,7 @@ export async function POST(req: Request) {
         ...job,
         id: Math.random().toString(36).substring(7),
         createdAt: new Date().toISOString(),
-        status: "open"
+        status: job.status || "open"
     };
 
     const updatedJobs = await updateJson<JobPost[]>("jobs.json", (current) => {

@@ -29,25 +29,25 @@ const loadData = (p: string) => JSON.parse(fs.readFileSync(p, "utf-8") || (p.end
 const saveData = (p: string, data: unknown) => fs.writeFileSync(p, JSON.stringify(data, null, 2));
 
 const SYSTEM_PROMPT = `
-You are KolaMatch Intelligence, a high-fidelity Career Agent and Profile Sync Engine.
-Your goal is to provide intelligent matchmaking and career advice on WhatsApp.
+You are KolaMatch Intelligence, a high-fidelity AI Broker and Career Agent.
+Your goal is to provide intelligent matchmaking and seamlessly bridge communication between freelancers and clients on WhatsApp.
 
 FORMATTING RULES:
 - BE EXTREMELY CONCISE. No long paragraphs. Use emojis effectively.
 - Use *single asterisks* for bolding (e.g. *Title*). NEVER use double asterisks.
 - Do NOT use markdown headers (#, ##, ###). Use bold text for section headers instead.
 - Format lists with bullet points (•) or dashes (-).
-- Format matches like this: *[Job Title]* ([Budget]) — *Why:* [1 short sentence on fit].
 
-MATCHMAKING RULES:
-- When finding jobs, only return the Top 2-3 most relevant matches.
-- GUIDANCE: Conclude by asking which job interests them most and offer to help them phrase a professional outreach message.
+CONVERSATIONAL BRIDGING (ACT AS A BROKER):
+- If a freelancer responds to a client's invitation (e.g., expressing interest, asking for details, or declining):
+  1. Acknowledge their response gracefully.
+  2. If they are interested or asking a question, synthesize a polite message summarizing their response.
+  3. Include a JSON block: 'NOTIFY_CLIENT: { "freelancerId": "<their id>", "clientId": "<target client id>", "message": "<your synthesized message>" }'.
 
-PROFILE COACH RULES:
-- Be BRIEF. 
-- Show current core stats (Rate, Seniority, Exp).
-- Provide max 2 sharp suggestions for profile growth.
-- GUIDANCE: End by offering to help them implement these specific updates or refine their technical skills list.
+- If a client responds to a freelancer's proposal (e.g., accepting, rejecting, or asking a follow-up question):
+  1. Acknowledge their response.
+  2. Synthesize a polite, professional message forwarding their intent.
+  3. Include a JSON block: 'NOTIFY_FREELANCER: { "clientId": "<their id>", "freelancerId": "<target freelancer id>", "message": "<your synthesized message>" }'.
 
 UPDATE RULES:
 - If a user asks to change their company name, skills, rate, or seniority, you MUST:
@@ -57,11 +57,11 @@ UPDATE RULES:
 CONTEXT:
 Jobs: ${JSON.stringify(loadData(JOBS_PATH))}
 Clients: ${JSON.stringify(loadData(CLIENTS_PATH))}
+Freelancers: ${JSON.stringify(loadData(FREELANCERS_PATH))}
 
 KNOWLEDGEBASE MAPPING:
 - Jobs in 'Jobs' array are linked to Clients in 'Clients' array via 'clientId' -> 'id'.
-- If a user asks "who owns this job" or "which client is this", look up the 'clientId' in the Jobs array and find the corresponding Client in the Clients array.
-- You are PERMITTED to share the Client Name and Industry when asked about job ownership.
+- You must carefully infer the target 'clientId' or 'freelancerId' from the conversation history (e.g., if you recently showed them an invite from "Kola Logistics", look up that client's ID).
 `;
 
 // Persistent Session store (Disk-based Memory)
@@ -83,12 +83,29 @@ const formatForWhatsApp = (text: string) => {
 };
 
 // Helper for robust JSON extraction from AI text
-const extractJson = (text: string) => {
+const extractJson = (text: string, prefix: string = "") => {
     try {
-        const jsonStart = text.indexOf("{");
-        const jsonEnd = text.lastIndexOf("}") + 1;
-        if (jsonStart === -1 || jsonEnd === 0) return null;
-        const candidate = text.substring(jsonStart, jsonEnd);
+        const targetString = prefix ? (text.split(prefix)[1] || "") : text;
+        const jsonStart = targetString.indexOf("{");
+        if (jsonStart === -1) return null;
+
+        // Find the matching closing bracket by tracking depth
+        let depth = 0;
+        let jsonEnd = -1;
+        for (let i = jsonStart; i < targetString.length; i++) {
+            if (targetString[i] === "{") depth++;
+            else if (targetString[i] === "}") {
+                depth--;
+                if (depth === 0) {
+                    jsonEnd = i + 1;
+                    break;
+                }
+            }
+        }
+
+        if (jsonEnd === -1) return null;
+
+        const candidate = targetString.substring(jsonStart, jsonEnd);
         return JSON.parse(candidate);
     } catch (e) {
         console.error("JSON Extraction Error:", e);
@@ -254,9 +271,10 @@ ${SYSTEM_PROMPT}
 CURRENT USER: ${user?.name || "Guest"} (${role})
 USER DATA: ${JSON.stringify(user || { status: "unlinked" })}
 
-If role is 'guest', politely ask them to link their WhatsApp in the KolaMatch Settings.
-If role is 'client', focus on their active jobs and finding freelancers.
-If role is 'freelancer', focus on career coaching and job matches.
+CRITICAL DIRECTIVES FOR THIS TURN:
+1. IF the user is responding to an AI proposal alert, an invite, or any broker message, YOU MUST use the CONVERSATIONAL BRIDGING rules to forward their intent using NOTIFY_FREELANCER or NOTIFY_CLIENT. Do NOT attempt to find new talent or start a new job search if they are just replying to a proposal.
+2. If role is 'guest', politely ask them to link their WhatsApp in the KolaMatch Settings.
+3. If they explicitly ask for new talent or job matches, ONLY THEN should you fetch jobs/freelancers.
 `;
 
         try {
@@ -273,31 +291,44 @@ If role is 'freelancer', focus on career coaching and job matches.
 
             const reply = response.choices[0].message.content || "...";
 
-            if (reply.includes("UPDATE_PROFILE:")) {
-                const parts = reply.split("UPDATE_PROFILE:");
-                const jsonPart = parts[1];
-                const sync = extractJson(jsonPart);
+            let cleanReply = reply;
+            if (reply.includes("NOTIFY_CLIENT:")) {
+                const parts = reply.split("NOTIFY_CLIENT:");
+                cleanReply = parts[0].trim();
 
-                if (sync && sync.updates) {
-                    if (role === "client") {
-                        const index = (clients as ClientProfile[]).findIndex((c) => c.phone === userPhone);
-                        if (index > -1) {
-                            clients[index] = { ...clients[index], ...sync.updates, phone: userPhone };
-                            saveData(CLIENTS_PATH, clients);
+                for (let i = 1; i < parts.length; i++) {
+                    const notification = extractJson(parts[i]);
+                    if (notification && notification.clientId && notification.message) {
+                        const clientsData = loadData(CLIENTS_PATH);
+                        const targetClient = clientsData.find((c: any) => c.id === notification.clientId);
+                        if (targetClient && targetClient.phone) {
+                            await client.sendText(`${targetClient.phone}@c.us`, notification.message);
+                            console.log(`📡 [AI Broker] Forwarded message to client ${targetClient.name}`);
                         }
-                    } else {
-                        const index = (freelancers as FreelancerProfile[]).findIndex((f) => f.phone === userPhone) || 0;
-                        freelancers[index] = { ...freelancers[index], ...sync.updates, phone: userPhone };
-                        saveData(FREELANCERS_PATH, freelancers);
                     }
-
-                    const cleanReply = parts[0].trim();
-                    await client.sendText(from, formatForWhatsApp(cleanReply || "✅ Profile updated and synced!"));
-                } else {
-                    await client.sendText(from, formatForWhatsApp(reply)); // Fallback to sending full reply if parse fails
                 }
-            } else {
-                await client.sendText(from, formatForWhatsApp(reply));
+            } else if (reply.includes("NOTIFY_FREELANCER:")) {
+                const parts = reply.split("NOTIFY_FREELANCER:");
+                cleanReply = parts[0].trim();
+
+                for (let i = 1; i < parts.length; i++) {
+                    const notification = extractJson(parts[i]);
+                    if (notification && notification.freelancerId && notification.message) {
+                        const freelancersData = loadData(FREELANCERS_PATH);
+                        const targetFreelancer = freelancersData.find((f: any) => f.id === notification.freelancerId);
+                        if (targetFreelancer && targetFreelancer.phone) {
+                            await client.sendText(`${targetFreelancer.phone}@c.us`, notification.message);
+                            console.log(`📡 [AI Broker] Forwarded message to freelancer ${targetFreelancer.name}`);
+                        }
+                    }
+                }
+            } else if (reply.includes("UPDATE_PROFILE:")) {
+                cleanReply = reply.split("UPDATE_PROFILE:")[0].trim();
+            }
+
+            // Always respond to the current user
+            if (cleanReply) {
+                await client.sendText(from, formatForWhatsApp(cleanReply));
             }
 
             // Update History
@@ -388,6 +419,12 @@ wppconnect
 
                         await client.sendText(target, message);
                         console.log(`📡 [Bridge] Message sent to ${phone}`);
+
+                        // Sync bridge messages to AI history so it can understand replies
+                        const userPhone = phone.includes("@") ? phone.split("@")[0] : phone;
+                        if (!userHistories[userPhone]) userHistories[userPhone] = [];
+                        userHistories[userPhone].push({ role: "assistant", content: message });
+                        saveHistory();
 
                         return Response.json({ success: true });
                     } catch (e) {

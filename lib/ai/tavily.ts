@@ -30,11 +30,12 @@ export async function tavilySearch(query: string, maxResults = 5): Promise<Tavil
     return response.json();
 }
 
-export async function tavilyResearchForScoping(projectDescription: string): Promise<{ context: string; sources: { title: string; url: string }[] }> {
+export async function tavilyResearchForScoping(projectDescription: string, regions: string[] = ["Africa"]): Promise<{ context: string; sources: { title: string; url: string }[] }> {
+    const regionNames = regions.join(", ");
     const queries = [
-        `${projectDescription} freelance development cost 2026`,
-        `${projectDescription} project timeline estimation`,
-        `market rates for ${projectDescription} development`,
+        `${projectDescription} freelance development cost in ${regionNames} 2026`,
+        `${projectDescription} project timeline estimation in ${regions[0] || "Africa"}`,
+        `market rates for ${projectDescription} development in ${regionNames}`,
     ];
 
     const results = await Promise.allSettled(

@@ -1,0 +1,54 @@
+[
+  {
+    "id": "app_1",
+    "jobId": "job_1",
+    "freelancerId": "f2",
+    "proposal": "Dear Kola Logistics,\n\nI am excited to apply for the Mobile Logistics App project. With my experience in Next.js and financial structuring, I can deliver a high-quality fleet management solution.\n\nStrategy: I will focus on implementing a scalable backend architecture with secure payment integrations.\n\nLooking forward to discussing this further.",
+    "status": "submitted",
+    "appliedAt": "2026-04-22T10:00:00Z"
+  },
+  {
+    "id": "app_2",
+    "jobId": "job_2",
+    "freelancerId": "f2",
+    "proposal": "Dear KolaMatch Partner,\n\nI am interested in the E-commerce UI/UX Refactor. I have extensive experience in modern web technologies and user-centric design.",
+    "status": "under_review",
+    "appliedAt": "2026-04-21T09:30:00Z"
+  },
+  {
+    "id": "app_1777111238641",
+    "jobId": "u78uo",
+    "freelancerId": "f2",
+    "proposal": "Dear KolaMatch Test Client,\n\nAs a Senior Developer with deep expertise in full-stack architecture and financial structuring, I specialize in building high-performance, scalable communication tools tailored for the African market. My background in both Node.js and market research ensures your MVP isn't just a technical success, but a commercially viable product ready for rapid scaling.\n• Execution Strategy: I will deploy a Flutter-based frontend with a Node.js/PostgreSQL backend, utilizing WebSockets for real-time messaging and a modular API layer to ensure seamless Mobile Money integration.\n\nMy extensive experience in financial structuring ensures the payment architecture will meet local regulatory standards and user expectations.\n\nBest regards,\n\nIvan Ssempijja",
+    "channel": "whatsapp",
+    "status": "submitted",
+    "appliedAt": "2026-04-25T10:00:38.641Z"
+  },
+  {
+    "id": "app_1777111799334",
+    "jobId": "u78uo",
+    "freelancerId": "f2",
+    "proposal": "Dear KolaMatch Test Client,\n\nAs a Senior Developer with deep expertise in full-stack architecture and financial structuring, I specialize in building high-performance, transaction-ready communication platforms. I bridge the gap between complex real-time messaging and the rigorous security requirements of mobile money ecosystems.\n• Execution: I will deploy a Flutter-based cross-platform solution utilizing a Node.js/PostgreSQL backend for sub-second message latency, ensuring the architecture is pre-optimized for local mobile money API hooks.\n\nMy background in market research and financial integration ensures this MVP isn't just a chat tool, but a scalable fintech foundation tailored for the regional digital economy.\n\nStrategic regards,\n\nIvan Ssempijja",
+    "channel": "whatsapp",
+    "status": "submitted",
+    "appliedAt": "2026-04-25T10:09:59.334Z"
+  },
+  {
+    "id": "app_1777111983522",
+    "jobId": "u78uo",
+    "freelancerId": "f2",
+    "proposal": "Dear KolaMatch Test Client,\n\nAs a Senior Developer specializing in high-performance architectures, I offer the rare fusion of full-stack engineering and financial structuring necessary to bridge real-time messaging with secure Mobile Money frameworks. I don’t just build apps; I engineer scalable ecosystems designed for the unique demands of the African digital economy.\n• Execution: I will deploy a Flutter-based frontend for native fluid performance, backed by a Node.js/PostgreSQL infrastructure using WebSockets for sub-second latency and an extensible API layer ready for instant Momo integration.\n\nMy deep understanding of regional payment landscapes ensures your MVP transitions seamlessly from a chat utility to a robust financial tool.\n\nBest regards,\n\nIvan Ssempijja",
+    "channel": "whatsapp",
+    "status": "submitted",
+    "appliedAt": "2026-04-25T10:13:03.522Z"
+  },
+  {
+    "id": "app_1777112332620",
+    "jobId": "u78uo",
+    "freelancerId": "f2",
+    "proposal": "Dear KolaMatch Test Client,\n\nAs a Senior Developer with deep expertise in full-stack architecture and financial structuring, I specialize in building high-performance, scalable messaging ecosystems integrated with fintech protocols. My background ensures your MVP isn't just a chat tool, but a secure, transaction-ready asset optimized for the African market.\n• Execution: I will deploy a Flutter-based frontend for native fluidity, backed by a Node.js/PostgreSQL architecture to handle real-time synchronization and secure Mobile Money hooks.\n\nMy experience in regional financial structuring ensures your payment integration documentation will be compliant, robust, and ready for immediate scale.\n\nBest regards,\n\nIvan Ssempijja",
+    "channel": "whatsapp",
+    "status": "submitted",
+    "appliedAt": "2026-04-25T10:18:52.620Z"
+  }
+]

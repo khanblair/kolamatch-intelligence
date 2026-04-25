@@ -15,6 +15,7 @@ export default function LoginPage() {
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
+        localStorage.setItem("userEmail", email || "client@kolaborate.com");
         router.push(`/${role}/dashboard`);
     };
 

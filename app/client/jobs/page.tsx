@@ -10,9 +10,17 @@ export default function ClientJobsPage() {
     const [jobs, setJobs] = useState<JobPost[]>([]);
 
     useEffect(() => {
+        const email = localStorage.getItem("userEmail");
+        const currentClientId = email === "jane@kolalogistics.com" ? "c1" : (email === "robert@keziafintech.ug" ? "c2" : "c3");
+
         fetch("/api/jobs")
             .then(res => res.json())
-            .then(setJobs);
+            .then(data => {
+                const filtered = data.filter((job: JobPost) =>
+                    job.clientId === currentClientId && job.status !== "draft"
+                );
+                setJobs(filtered);
+            });
     }, []);
 
     return (
@@ -22,12 +30,20 @@ export default function ClientJobsPage() {
                     <h1 className="text-2xl font-bold text-gray-900">My Posted Projects</h1>
                     <p className="text-gray-500">Manage your projects and review proposals.</p>
                 </div>
-                <Link href="/client/dashboard" className="w-full sm:w-auto">
-                    <Button className="gap-2 w-full sm:w-auto">
-                        <Plus className="h-4 w-4" />
-                        New Project
-                    </Button>
-                </Link>
+                <div className="flex gap-2 w-full sm:w-auto">
+                    <Link href="/client/drafts" className="flex-1 sm:flex-initial">
+                        <Button variant="outline" className="gap-2 w-full font-bold border-amber-200 text-amber-700 hover:bg-amber-50">
+                            <FileText className="h-4 w-4" />
+                            Draft Projects
+                        </Button>
+                    </Link>
+                    <Link href="/client/dashboard" className="flex-1 sm:flex-initial">
+                        <Button className="gap-2 w-full bg-[#35b544] hover:bg-[#2e9e3b] font-bold">
+                            <Plus className="h-4 w-4" />
+                            New Project
+                        </Button>
+                    </Link>
+                </div>
             </div>
 
             <div className="grid grid-cols-1 gap-4">
@@ -51,11 +67,8 @@ export default function ClientJobsPage() {
                                     </div>
                                 </div>
                                 <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-                                    <Button variant="outline" size="sm" className="gap-2 px-4 font-bold h-8 text-[11px] border-gray-200">
+                                    <Button variant="outline" size="sm" className="gap-2 px-4 font-bold h-8 text-[11px] border-gray-100 group-hover:border-[#35b544] group-hover:text-[#35b544] transition-colors">
                                         <Users className="h-3 w-3" /> 18 Matches
-                                    </Button>
-                                    <Button variant="primary" size="sm" className="gap-2 px-4 font-bold h-8 text-[11px] shadow-none">
-                                        View Dashboard <ChevronRight className="h-3 w-3" />
                                     </Button>
                                 </div>
                             </div>

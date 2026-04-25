@@ -18,8 +18,8 @@ export default function ClientSettings() {
             .then(res => res.json())
             .then(data => setTelegramConfig(data.telegram));
 
-        // Mock current user c1
-        fetch("/api/profile?role=client&id=c1")
+        // Mock current user c3 (client@kolaborate.com)
+        fetch("/api/profile?role=client&id=c3")
             .then(res => res.json())
             .then(setUserProfile);
     }, []);
@@ -127,7 +127,7 @@ export default function ClientSettings() {
             <div className="grid grid-cols-1 gap-6">
                 {/* Account Profile Section */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                    <ConnectWhatsApp role="client" userId="c1" initialPhone={userProfile?.phone} />
+                    <ConnectWhatsApp role="client" userId="c3" userName={userProfile?.name} initialPhone={userProfile?.phone} />
 
                     <Card className="p-6 sm:p-8 shadow-sm border-gray-100">
                         <div className="flex items-center gap-4 mb-6 md:mb-8">
@@ -142,11 +142,11 @@ export default function ClientSettings() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <div className="space-y-1">
                                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Company</label>
-                                <p className="text-gray-900 font-bold text-sm">Kola Logistics Ltd</p>
+                                <p className="text-gray-900 font-bold text-sm">{userProfile?.name || "Loading..."}</p>
                             </div>
                             <div className="space-y-1">
                                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">Industry</label>
-                                <p className="text-gray-900 font-bold text-sm">Logistics</p>
+                                <p className="text-gray-900 font-bold text-sm">{userProfile?.industry || "Software"}</p>
                             </div>
                         </div>
                     </Card>

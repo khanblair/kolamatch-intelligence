@@ -149,7 +149,7 @@ export default function FreelancerSettings() {
 
             {/* Notification Preferences Section */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-                <ConnectWhatsApp role="freelancer" userId="f2" initialPhone={userProfile?.phone} />
+                <ConnectWhatsApp role="freelancer" userId="f2" userName={userProfile?.name} initialPhone={userProfile?.phone} />
 
                 <Card className="p-6 sm:p-8 shadow-sm border-gray-100">
                     <div className="flex items-center gap-4 mb-6 md:mb-8">
