@@ -51,6 +51,14 @@
     {
       "role": "assistant",
       "content": "Hello! I am ready to assist you. 🤝\n\nAs we are currently in *Guest* mode, I don't have your full profile or contact history yet. To enjoy seamless matchmaking and bridging on WhatsApp, please:\n\n• Go to your *KolaMatch Settings*.\n• Link your *WhatsApp* account.\n\nOnce linked, I can:\n- 🚀 Connect you with top tech talent or clients.\n- 📩 Bridge your conversations automatically.\n- 💼 Manage your project bids and profiles.\n\nWhat can I help you with first?"
+    },
+    {
+      "role": "user",
+      "content": "what’s my profile"
+    },
+    {
+      "role": "assistant",
+      "content": "Currently, you are accessing the system as a *Guest*. 👤\n\nBecause your account is *unlinked*, I don't have access to your specific professional details, skills, or history.\n\nTo view and manage your profile (and to start matching with jobs or talent), please:\n• Go to your *KolaMatch Settings*.\n• Link your *WhatsApp* account.\n\nOnce you've done that, I can retrieve your specific role as a *Freelancer* or *Client* and show you your full profile details! 🚀"
     }
   ]
 }
